@@ -29,7 +29,15 @@
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
-            bindings = <&kp LG(C)>, <&kp LG(V)>;
+            bindings = <&ht LG(X) LG(C)>, <&kp LG(V)>;
+        };
+
+        ht: hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <500>;
+            bindings = <&kp>, <&kp>;
         };
 
         td_rtm: tap_dance_rtm {
