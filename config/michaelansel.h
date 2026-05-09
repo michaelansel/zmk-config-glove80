@@ -56,9 +56,3 @@
 #define AE_TGRT LC(LA(FSLH))         // layout horizontal vertical
 #define AE_TRST LC(LA(SQT))          // flatten-workspace-tree
 #define AE_FMON lk_aero_foc_mon      // focus-monitor --wrap-around next (leader key macro)
-
-// Leader Key sequences
-// X(key_label, sequence_string)
-#define LEADER_KEY_APP_SEQUENCES(X) \
-    X(lk_aero_foc_mon, A F) /* Aerospace Focus Next Monitor */ \
-    X(lk_open_typora,  O N) /* Open Typora */

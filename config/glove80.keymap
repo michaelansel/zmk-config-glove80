@@ -79,16 +79,11 @@
             bindings = <&out OUT_BLE>, <&bt BT_SEL 3>;
         };
 
-        mod_fix: mod_fix_macro {
-            label = "MOD_FIX";
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&kp LCTRL>, <&kp LALT>, <&kp LGUI>, <&kp LSHFT>
-                , <&kp RCTRL>, <&kp RALT>, <&kp RGUI>, <&kp RSHFT>;
-        };
 
-        lk_aero_foc_mon: lk_aero_foc_mon_macro {
+        // Leader Key sequences
+
+        // Aerospace Focus Next Monitor
+        lk_aero_foc_mon: lk_aero_focus_monitor_macro {
             label = "LK_AERO_FOC_MON";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -96,6 +91,7 @@
             bindings = <&kp LEADERK>, <&kp A>, <&kp F>;
         };
 
+        // Open Typora
         lk_open_typora: lk_open_typora_macro {
             label = "LK_OPEN_TYPORA";
             compatible = "zmk,behavior-macro";
@@ -141,9 +137,9 @@
             // | MAGIC |LCTL |LALT |LGUI |LSHFT |       | MO(SYM)| MO(NAV)| NONE | NONE  | ENT   | SYM/SPC|      | RSHFT| RGUI| RALT| RCTL | NONE |
 
             bindings = <
-            &kp ESC        &none        &none        &none        &none                                                                                          &mod_fix     &none        &none        &none        &bootloader
+            &kp ESC        &none        &none        &none        &none                                                                                          &none     &none        &none        &none        &bootloader
             &none          &kp N1       &kp N2       &kp N3       &kp N4       &kp N5                                                               &kp N6       &kp N7       &kp N8       &kp N9       &kp N0       &kp MINUS
-            &none          &kp Q        &kp W        &kp E        &kp R        &kp T                                                                &kp Y        &kp U        &kp I        &kp O        &kp P        &kp BSLH
+            &none          &kp Q        &kp W        &kp E        &kp R        &kp T                                                                &kp Y        &kp U        &kp I        &kp O        &kp P        &none
             &none          &kp A        &kp S        &kp D        &kp F        &kp G                                                                &kp H        &kp J        &kp K        &kp L        &kp SEMI     &kp SQT
             &none          &kp Z        &kp X        &kp C        &kp V        &kp B        &mo WIN      &none        &none        &none        &none        &sl UNI      &kp N        &kp M        &kp COMMA    &kp DOT      &kp FSLH     &none
             &magic MAGIC 0 &kp LCTRL    &kp LALT     &kp LGUI     &kp LSHFT                &mo SYM      &mo NAV      &none        &none        &kp ENTER    &lt SYM SPACE               &kp RSHFT    &kp RGUI     &kp RALT     &kp RCTRL    &none
