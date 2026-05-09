@@ -4,7 +4,7 @@
 #define BASE         0
 #define NUM          1
 #define MAGIC        2
-#define FACTORY_TEST 3
+#define TEST         3
 #define NAV          4
 #define SYM          5
 #define UNI          6

@@ -19,7 +19,6 @@
     behaviors {
         magic: magic_hold_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "MAGIC_HOLD_TAP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
@@ -28,7 +27,6 @@
 
         td_cpy_pst: tap_dance_copy_paste {
             compatible = "zmk,behavior-tap-dance";
-            label = "TD_COPY_PASTE";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
             bindings = <&kp LG(C)>, <&kp LG(V)>;
@@ -36,7 +34,6 @@
 
         td_rtm: tap_dance_rtm {
             compatible = "zmk,behavior-tap-dance";
-            label = "TD_RTM";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
             bindings = <&kp HS_RTM>, <&kp LG(LA(M))>;
@@ -45,35 +42,30 @@
 
     macros {
         rgb_ug_status_macro: rgb_ug_status_macro_0 {
-            label = "RGB_UG_STATUS";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&rgb_ug RGB_STATUS>;
         };
 
         bt_0: bt_profile_macro_0 {
-            label = "BT_0";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&out OUT_BLE>, <&bt BT_SEL 0>;
         };
 
         bt_1: bt_profile_macro_1 {
-            label = "BT_1";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&out OUT_BLE>, <&bt BT_SEL 1>;
         };
 
         bt_2: bt_profile_macro_2 {
-            label = "BT_2";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&out OUT_BLE>, <&bt BT_SEL 2>;
         };
 
         bt_3: bt_profile_macro_3 {
-            label = "BT_3";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&out OUT_BLE>, <&bt BT_SEL 3>;
@@ -84,7 +76,6 @@
 
         // Aerospace Focus Next Monitor
         lk_aero_foc_mon: lk_aero_focus_monitor_macro {
-            label = "LK_AERO_FOC_MON";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             wait-ms = <100>;
@@ -93,7 +84,6 @@
 
         // Open Typora
         lk_open_typora: lk_open_typora_macro {
-            label = "LK_OPEN_TYPORA";
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             wait-ms = <100>;
@@ -127,6 +117,7 @@
     keymap {
         compatible = "zmk,keymap";
 
+        // BASE 0
         base_layer {
             // ---------------------------------------------------------------------------------------------------------------------------------------
             // | ESC   |NONE |NONE |NONE | NONE |                                                                    | NONE |NONE |NONE | NONE | BOOT |
@@ -137,94 +128,101 @@
             // | MAGIC |LCTL |LALT |LGUI |LSHFT |       | MO(SYM)| MO(NAV)| NONE | NONE  | ENT   | SYM/SPC|      | RSHFT| RGUI| RALT| RCTL | NONE |
 
             bindings = <
-            &kp ESC        &none        &none        &none        &none                                                                                          &none     &none        &none        &none        &bootloader
-            &none          &kp N1       &kp N2       &kp N3       &kp N4       &kp N5                                                               &kp N6       &kp N7       &kp N8       &kp N9       &kp N0       &kp MINUS
-            &none          &kp Q        &kp W        &kp E        &kp R        &kp T                                                                &kp Y        &kp U        &kp I        &kp O        &kp P        &none
-            &none          &kp A        &kp S        &kp D        &kp F        &kp G                                                                &kp H        &kp J        &kp K        &kp L        &kp SEMI     &kp SQT
-            &none          &kp Z        &kp X        &kp C        &kp V        &kp B        &mo WIN      &none        &none        &none        &none        &sl UNI      &kp N        &kp M        &kp COMMA    &kp DOT      &kp FSLH     &none
-            &magic MAGIC 0 &kp LCTRL    &kp LALT     &kp LGUI     &kp LSHFT                &mo SYM      &mo NAV      &none        &none        &kp ENTER    &lt SYM SPACE               &kp RSHFT    &kp RGUI     &kp RALT     &kp RCTRL    &none
+            &kp ESC        &none     &none    &none    &none                                                                             &none     &none     &none    &none     &bootloader
+            &none          &kp N1    &kp N2   &kp N3   &kp N4    &kp N5                                                           &kp N6 &kp N7    &kp N8    &kp N9   &kp N0    &kp MINUS
+            &none          &kp Q     &kp W    &kp E    &kp R     &kp T                                                            &kp Y  &kp U     &kp I     &kp O    &kp P     &none
+            &none          &kp A     &kp S    &kp D    &kp F     &kp G                                                            &kp H  &kp J     &kp K     &kp L    &kp SEMI  &kp SQT
+            &none          &kp Z     &kp X    &kp C    &kp V     &kp B     &mo WIN &none   &none &none &none     &sl UNI          &kp N  &kp M     &kp COMMA &kp DOT  &kp FSLH  &none
+            &magic MAGIC 0 &kp LCTRL &kp LALT &kp LGUI &kp LSHFT           &mo SYM &mo NAV &none &none &kp ENTER &lt SYM SPACE           &kp RSHFT &kp RGUI  &kp RALT &kp RCTRL &none
             >;
         };
 
+        // NUM 1
         num_layer {
             // NUM layer — numpad on right hand, entry key stays transparent
             bindings = <
-            &none          &none        &none        &none        &none                                                                                          &none        &none        &none        &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &none        &none        &none        &none        &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &none        &kp N7       &kp N8       &kp N9       &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &none        &kp N4       &kp N5       &kp N6       &kp MINUS    &none
-            &none          &none        &none        &none        &none        &none        &trans       &none        &none        &none        &none        &none        &none        &kp N1       &kp N2       &kp N3       &kp FSLH     &none
-            &trans         &none        &none        &none        &trans                   &trans       &none        &none        &none        &none        &kp N0                    &none        &none        &kp DOT      &none        &none
+            &none  &none &none &none &none                                                          &none  &none  &none   &none     &none
+            &none  &none &none &none &none  &none                                             &none &none  &none  &none   &none     &none
+            &none  &none &none &none &none  &none                                             &none &kp N7 &kp N8 &kp N9  &none     &none
+            &none  &none &none &none &none  &none                                             &none &kp N4 &kp N5 &kp N6  &kp MINUS &none
+            &none  &none &none &none &none  &none    &trans &none &none &none &none &none     &none &kp N1 &kp N2 &kp N3  &kp FSLH  &none
+            &trans &none &none &none &trans          &trans &none &none &none &none &kp N0          &none  &none  &kp DOT &none     &none
             >;
         };
 
+        // MAGIC 2
         magic_layer {
             bindings = <
-            &bt BT_CLR        &none               &none           &none           &none                                                                                                           &none      &none      &none      &none      &bt BT_CLR_ALL
-            &none             &none               &none           &none           &none           &none                                                                                &none      &none      &none      &none      &none      &none
-            &none             &rgb_ug RGB_SPI     &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_BRI &rgb_ug RGB_TOG                                                                      &none      &none      &none      &none      &none      &none
-            &bootloader       &rgb_ug RGB_SPD     &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_BRD &rgb_ug RGB_EFF                                                                      &none      &none      &none      &none      &none      &bootloader
-            &sys_reset        &none               &none           &none           &none           &none           &bt_2     &bt_3     &none            &none     &none     &none       &none      &none      &none      &none      &none      &sys_reset
-            &none             &none               &none           &none           &none                           &bt_0     &bt_1     &out OUT_USB     &none     &none     &none                  &none      &none      &none      &none      &to FACTORY_TEST
+            &bt BT_CLR  &none           &none           &none           &none                                                                                  &none &none &none &none &bt BT_CLR_ALL
+            &none       &none           &none           &none           &none           &none                                                            &none &none &none &none &none &none
+            &none       &rgb_ug RGB_SPI &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_BRI &rgb_ug RGB_TOG                                                  &none &none &none &none &none &none
+            &bootloader &rgb_ug RGB_SPD &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_BRD &rgb_ug RGB_EFF                                                  &none &none &none &none &none &bootloader
+            &sys_reset  &none           &none           &none           &none           &none              &bt_2 &bt_3 &none        &none &none &none    &none &none &none &none &none &sys_reset
+            &none       &none           &none           &none           &none                              &bt_0 &bt_1 &out OUT_USB &none &none &none          &none &none &none &none &to TEST
             >;
         };
 
+        // TEST 3
         factory_test_layer {
             bindings = <
-            &kp N0   &kp N6   &kp N2   &kp N8   &kp N4                                                                              &kp N4   &kp N8   &kp N2   &kp N6   &kp N0
-            &kp N1   &kp N7   &kp N3   &kp N9   &kp N5   &kp N0                                                            &kp N0   &kp N5   &kp N9   &kp N3   &kp N7   &kp N1
-            &kp N2   &kp N8   &kp N4   &kp N0   &kp N6   &kp N1                                                            &kp N1   &kp N6   &kp N0   &kp N4   &kp N8   &kp N2
-            &kp N3   &kp N9   &kp N5   &kp N1   &kp N7   &kp N2                                                            &kp N2   &kp N7   &kp N1   &kp N5   &kp N9   &kp N3
-            &kp N4   &kp N0   &kp N6   &kp N2   &kp N8   &kp N3   &kp N4   &kp N5   &kp N6      &kp N6   &kp N5   &kp N4   &kp N3   &kp N8   &kp N2   &kp N6   &kp N0   &kp N4
-            &kp N5   &kp N1   &kp N7   &kp N3   &kp N9            &kp N7   &kp N8   &kp N9      &kp N9   &kp N8   &kp N7            &kp N9   &kp N3   &kp N7   &kp N1   &kp N5
+            &kp N0 &kp N6 &kp N2 &kp N8 &kp N4                                                               &kp N4 &kp N8 &kp N2 &kp N6 &kp N0
+            &kp N1 &kp N7 &kp N3 &kp N9 &kp N5 &kp N0                                                 &kp N0 &kp N5 &kp N9 &kp N3 &kp N7 &kp N1
+            &kp N2 &kp N8 &kp N4 &kp N0 &kp N6 &kp N1                                                 &kp N1 &kp N6 &kp N0 &kp N4 &kp N8 &kp N2
+            &kp N3 &kp N9 &kp N5 &kp N1 &kp N7 &kp N2                                                 &kp N2 &kp N7 &kp N1 &kp N5 &kp N9 &kp N3
+            &kp N4 &kp N0 &kp N6 &kp N2 &kp N8 &kp N3    &kp N4 &kp N5 &kp N6 &kp N6 &kp N5 &kp N4    &kp N3 &kp N8 &kp N2 &kp N6 &kp N0 &kp N4
+            &kp N5 &kp N1 &kp N7 &kp N3 &kp N9           &kp N7 &kp N8 &kp N9 &kp N9 &kp N8 &kp N7           &kp N9 &kp N3 &kp N7 &kp N1 &kp N5
             >;
         };
 
+        // NAV 4
         nav_layer {
             // NAV: HJKL arrows, home row mods on left, nav cluster on right bottom alpha
             bindings = <
-            &none          &none        &none        &none        &none                                                                                          &none        &none        &none        &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &none        &none        &none        &none        &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &none        &kp HS_PTAB  &none        &kp HS_NTAB  &none        &none
-            &none          &kp LCTRL    &kp LALT     &kp LGUI     &kp LSHFT    &none                                                                &kp LEFT     &kp DOWN     &kp UP       &kp RIGHT    &none        &none
-            &none          &none        &none        &none        &none        &none        &none        &none        &none        &none        &none        &none        &kp HOME     &kp PG_DN    &kp PG_UP    &kp END      &none        &none
-            &trans         &none        &none        &none        &none                    &none        &trans       &none        &none        &kp LS(ENTER) &none                    &kp HS_SCDN  &kp HS_SCUP  &kp HS_BTN1  &kp HS_MCTR  &none
+            &none  &none     &none    &none    &none                                                                       &none       &none       &none       &none       &none
+            &none  &none     &none    &none    &none     &none                                                    &none    &none       &none       &none       &none       &none
+            &none  &none     &none    &none    &none     &none                                                    &none    &kp HS_PTAB &none       &kp HS_NTAB &none       &none
+            &none  &kp LCTRL &kp LALT &kp LGUI &kp LSHFT &none                                                    &kp LEFT &kp DOWN    &kp UP      &kp RIGHT   &none       &none
+            &none  &none     &none    &none    &none     &none    &none &none  &none &none &none         &none    &kp HOME &kp PG_DN   &kp PG_UP   &kp END     &none       &none
+            &trans &none     &none    &none    &none              &none &trans &none &none &kp LS(ENTER) &none             &kp HS_SCDN &kp HS_SCUP &kp HS_BTN1 &kp HS_MCTR &none
             >;
         };
 
+        // SYM 5
         sym_layer {
             // SYM: symbols on left alpha, parens/brackets on right, mods on left home row
             bindings = <
-            &none          &none        &none        &none        &none                                                                                          &none        &none        &none        &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &kp CARET    &kp AMPS     &kp ASTRK    &none        &none        &none
-            &none          &kp EXCL     &kp AT       &kp HASH     &kp DLLR     &kp PRCNT                                                            &kp ESC      &kp LBRC     &kp TAB      &kp RBRC     &none        &none
-            &none          &kp LCTRL    &kp LALT     &kp LGUI     &kp LSHFT    &kp EQUAL                                                            &kp PIPE     &kp LPAR     &kp MINUS    &kp RPAR     &kp COLON    &kp DQT
-            &none          &kp BSLH     &kp LT       &td_cpy_pst  &kp GT       &kp TILDE    &none        &none        &none        &none        &kp DEL      &none        &kp GRAVE    &kp LBKT     &kp UNDER    &kp RBKT     &kp QMARK    &none
-            &trans         &trans       &trans       &trans       &tog NUM                  &trans       &none        &none        &none        &kp LG(ENTER) &kp BSPC                  &trans       &trans       &trans       &trans       &none
+            &none  &none     &none    &none       &none                                                                               &none    &none     &none    &none     &none
+            &none  &none     &none    &none       &none     &none                                                           &kp CARET &kp AMPS &kp ASTRK &none    &none     &none
+            &none  &kp EXCL  &kp AT   &kp HASH    &kp DLLR  &kp PRCNT                                                       &kp ESC   &kp LBRC &kp TAB   &kp RBRC &none     &none
+            &none  &kp LCTRL &kp LALT &kp LGUI    &kp LSHFT &kp EQUAL                                                       &kp PIPE  &kp LPAR &kp MINUS &kp RPAR &kp COLON &kp DQT
+            &none  &kp BSLH  &kp LT   &td_cpy_pst &kp GT    &kp TILDE    &none  &none &none &none &kp DEL       &none       &kp GRAVE &kp LBKT &kp UNDER &kp RBKT &kp QMARK &none
+            &trans &trans    &trans   &trans      &tog NUM               &trans &none &none &none &kp LG(ENTER) &kp BSPC              &trans   &trans    &trans   &trans    &none
             >;
         };
 
+        // UNI 6
         uni_layer {
             // UNI: app launchers via Hammerspoon, media, Magnet
             bindings = <
-            &none          &none        &none        &none        &none                                                                                          &none        &none        &none        &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &none        &none        &none        &none        &none        &none
-            &none          &none        &none        &kp HS_MENU  &none        &none                                                                &kp HS_CHRM  &kp HS_MEET  &lk_open_typora &kp HS_SLAK &kp HS_CODE &kp HS_TERM
-            &none          &sk LCTRL    &sk LALT     &sk LGUI     &sk LSHFT    &none                                                                &td_rtm      &kp C_PREV   &kp C_PP     &kp C_NEXT   &kp HS_SPFY  &none
-            &none          &none        &none        &none        &none        &kp LC(B)    &kp HS_MENU  &none        &none        &none        &none        &trans       &none        &kp MAG_L    &kp MAG_MAX  &kp MAG_R    &kp MAG_RST  &none
-            &trans         &none        &none        &none        &none                    &none        &none        &none        &none        &none        &none                     &none        &none        &none        &none        &none
+            &none  &none     &none    &none       &none                                                                            &none       &none           &none       &none       &none
+            &none  &none     &none    &none       &none     &none                                                      &none       &none       &none           &none       &none       &none
+            &none  &none     &none    &kp HS_MENU &none     &none                                                      &kp HS_CHRM &kp HS_MEET &lk_open_typora &kp HS_SLAK &kp HS_CODE &kp HS_TERM
+            &none  &sk LCTRL &sk LALT &sk LGUI    &sk LSHFT &none                                                      &td_rtm     &kp C_PREV  &kp C_PP        &kp C_NEXT  &kp HS_SPFY &none
+            &none  &none     &none    &none       &none     &kp LC(B)    &kp HS_MENU &none &none &none &none &trans    &none       &kp MAG_L   &kp MAG_MAX     &kp MAG_R   &kp MAG_RST &none
+            &trans &none     &none    &none       &none                  &none       &none &none &none &none &none                 &none       &none           &none       &none       &none
             >;
         };
 
+        // WIN 7
         win_layer {
             // WIN: Aerospace window management
             bindings = <
-            &none          &none        &none        &none        &none                                                                                          &none        &none        &none        &none        &none
-            &none          &none        &none        &none        &none        &none                                                                &none        &none        &none        &none        &none        &none
-            &none          &AE_FMON     &none        &none        &none        &kp AE_FULL                                                          &kp AE_MV_L  &kp AE_MV_D  &kp AE_MV_U  &kp AE_MV_R  &kp AE_TGFT  &none
-            &none          &sk LCTRL    &sk LALT     &sk LGUI     &sk LSHFT    &kp AE_EQLS                                                          &kp AE_FO_L  &kp AE_FO_D  &kp AE_FO_U  &kp AE_FO_R  &kp AE_TGAC  &none
-            &none          &none        &none        &none        &none        &kp AE_TRST  &trans       &none        &none        &none        &kp HS_MENU  &kp LEADERK  &kp AE_JO_L  &kp AE_JO_D  &kp AE_JO_U  &kp AE_JO_R  &kp AE_TGRT  &none
-            &trans         &none        &none        &none        &none                    &none        &none        &none        &none        &none        &kp LEADERK                 &none        &none        &none        &none        &none
+            &none  &none     &none    &none    &none                                                                                    &none       &none       &none       &none       &none
+            &none  &none     &none    &none    &none     &none                                                              &none       &none       &none       &none       &none       &none
+            &none  &AE_FMON  &none    &none    &none     &kp AE_FULL                                                        &kp AE_MV_L &kp AE_MV_D &kp AE_MV_U &kp AE_MV_R &kp AE_TGFT &none
+            &none  &sk LCTRL &sk LALT &sk LGUI &sk LSHFT &kp AE_EQLS                                                        &kp AE_FO_L &kp AE_FO_D &kp AE_FO_U &kp AE_FO_R &kp AE_TGAC &none
+            &none  &none     &none    &none    &none     &kp AE_TRST    &trans &none &none &none &kp HS_MENU &kp LEADERK    &kp AE_JO_L &kp AE_JO_D &kp AE_JO_U &kp AE_JO_R &kp AE_TGRT &none
+            &trans &none     &none    &none    &none                    &none  &none &none &none &none       &kp LEADERK                &none       &none       &none       &none       &none
             >;
         };
     };
