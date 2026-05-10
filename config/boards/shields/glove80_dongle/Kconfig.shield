@@ -1,0 +1,2 @@
+config SHIELD_GLOVE80_DONGLE
+    def_bool $(shields_list_contains,glove80_dongle)

@@ -1,11 +1,26 @@
-{ pkgs ?  import <nixpkgs> {}
-, firmware ? import ../src {}
-}:
+{ firmware ? import ../src {} }:
 
 let
   config = ./.;
 
-  glove80_left  = firmware.zmk.override { board = "glove80_lh"; keymap = "${config}/glove80.keymap"; kconfig = "${config}/glove80.conf"; };
-  glove80_right = firmware.zmk.override { board = "glove80_rh"; keymap = "${config}/glove80.keymap"; kconfig = "${config}/glove80.conf"; };
+in {
+  left = firmware.zmk.override {
+    board   = "glove80_lh";
+    keymap  = "${config}/glove80.keymap";
+    kconfig = "${config}/glove80_lh_peripheral.conf";
+  };
 
-in firmware.combine_uf2 glove80_left glove80_right
+  right = firmware.zmk.override {
+    board   = "glove80_rh";
+    keymap  = "${config}/glove80.keymap";
+    kconfig = "${config}/glove80_rh_peripheral.conf";
+  };
+
+  dongle = firmware.zmk.override {
+    board        = "nice_nano_v2";
+    shield       = "glove80_dongle";
+    keymap       = "${config}/glove80.keymap";
+    kconfig      = "${config}/glove80_dongle.conf";
+    extraModules = [ "${config}" ];
+  };
+}
