@@ -9,6 +9,7 @@
 #define SYM          5
 #define UNI          6
 #define WIN          7
+#define GAME         8
 
 // Hammerspoon Hyper-key triggers (HYPER is defined in glove80.keymap)
 #define HS_WARP HYPER(A) // Launch warpd

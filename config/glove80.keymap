@@ -106,12 +106,14 @@
             timeout-ms = <50>;
             key-positions = <36 37>;   // S + D
             bindings = <&kp LSHFT>;
+            layers = <BASE>;
         };
 
         combo_rshift {
             timeout-ms = <50>;
             key-positions = <42 43>;   // K + L
             bindings = <&kp RSHFT>;
+            layers = <BASE>;
         };
 
         combo_caps_word {
@@ -119,6 +121,7 @@
             require-prior-idle-ms = <125>;
             key-positions = <36 37 42 43>;   // S + D + K + L
             bindings = <&caps_word>;
+            layers = <BASE>;
         };
     };
 
@@ -161,12 +164,12 @@
         // MAGIC 2
         magic_layer {
             bindings = <
-            &bt BT_CLR  &none           &none           &none           &none                                                                                  &none &none &none &none &bt BT_CLR_ALL
-            &none       &none           &none           &none           &none           &none                                                            &none &none &none &none &none &none
-            &none       &rgb_ug RGB_SPI &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_BRI &rgb_ug RGB_TOG                                                  &none &none &none &none &none &none
-            &bootloader &rgb_ug RGB_SPD &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_BRD &rgb_ug RGB_EFF                                                  &none &none &none &none &none &bootloader
-            &sys_reset  &none           &none           &none           &none           &none              &bt_2 &bt_3 &none        &none &none &none    &none &none &none &none &none &sys_reset
-            &none       &none           &none           &none           &none                              &bt_0 &bt_1 &out OUT_USB &none &none &none          &none &none &none &none &to TEST
+            &bt BT_CLR  &none           &none           &none           &none                                                                                  &none &none &none &none    &bt BT_CLR_ALL
+            &none       &none           &none           &none           &none           &none                                                            &none &none &none &none &none    &none
+            &none       &rgb_ug RGB_SPI &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_BRI &rgb_ug RGB_TOG                                                  &none &none &none &none &none    &none
+            &bootloader &rgb_ug RGB_SPD &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_BRD &rgb_ug RGB_EFF                                                  &none &none &none &none &none    &bootloader
+            &sys_reset  &none           &none           &none           &none           &none              &bt_2 &bt_3 &none        &none &none &none    &none &none &none &none &none    &sys_reset
+            &none       &none           &none           &none           &none                              &bt_0 &bt_1 &out OUT_USB &none &none &none          &none &none &none &to GAME &to TEST
             >;
         };
 
@@ -231,6 +234,18 @@
             &none  &sk LCTRL &sk LALT &sk LGUI &sk LSHFT &kp AE_EQLS                                                        &kp AE_FO_L &kp AE_FO_D &kp AE_FO_U &kp AE_FO_R &kp AE_TGAC &none
             &none  &none     &none    &none    &none     &kp AE_TRST    &trans &none &none &none &kp HS_MENU &kp LEADERK    &kp AE_JO_L &kp AE_JO_D &kp AE_JO_U &kp AE_JO_R &kp AE_TGRT &none
             &trans &none     &none    &none    &none                    &none  &none &none &none &none       &kp LEADERK                &none       &none       &none       &none       &none
+            >;
+        };
+        // GAME 8
+        game_layer {
+            // GAME: WASD game friendly layout
+            bindings = <
+            &none     &none     &none  &none  &none                                                                            &kp F1 &kp F2    &kp F3   &kp F4   &kp F5
+            &kp GRAVE &kp N6    &kp N7 &kp N8 &kp N9 &kp N0                                                             &kp F6 &kp F7 &kp F8    &kp F9   &kp F10  &kp MINUS
+            &kp T     &kp N1    &kp N2 &kp N3 &kp N4 &kp N5                                                             &kp Y  &kp U  &kp I     &kp O    &kp P    &none
+            &kp G     &kp TAB   &kp Q  &kp W  &kp E  &kp R                                                              &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
+            &kp B     &kp LSHFT &kp A  &kp S  &kp D  &kp F     &none     &none     &none &none    &kp UP   &none        &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &none
+            &kp V     &kp LCTRL &kp Z  &kp X  &kp C            &kp SPACE &kp LCTRL &none &kp LEFT &kp DOWN &kp RIGHT           &none  &none     &kp LBKT &kp RBKT &to BASE
             >;
         };
     };
