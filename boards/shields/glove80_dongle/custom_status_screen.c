@@ -31,42 +31,48 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <lvgl.h>
 
-/* ── colours ─────────────────────────────────────────────────────── */
-#define CLR_BG       0x0d1117
-#define CLR_FG       0xe6edf3
-#define CLR_DIM      0x6e7681
-#define CLR_GREEN    0x3fb950
-#define CLR_AMBER    0xd29922
-#define CLR_RED      0xf85149
-#define CLR_BLUE     0x388bfd
+#define CLR_BG    0x0d1117
+#define CLR_FG    0xe6edf3
+#define CLR_DIM   0x6e7681
+#define CLR_GREEN 0x3fb950
+#define CLR_AMBER 0xd29922
+#define CLR_RED   0xf85149
+#define CLR_BLUE  0x388bfd
 
-/* ── UI state (written from event thread, read from display work-q) ─ */
 static struct {
     zmk_keymap_layer_index_t layer_index;
-    const char              *layer_name;
     struct zmk_endpoint_instance endpoint;
-    bool                     ble_connected;
-    bool                     ble_bonded;
-    uint8_t                  bat[2];      /* peripheral 0=left 1=right */
-    bool                     bat_known[2];
+    bool     ble_connected;
+    bool     ble_bonded;
+    uint8_t  bat[2];      /* peripheral: 0=left 1=right */
+    bool     bat_known[2];
 } g;
 
-/* ── LVGL object handles ─────────────────────────────────────────── */
 static lv_obj_t *conn_label;
 static lv_obj_t *layer_name_label;
 static lv_obj_t *layer_num_label;
 static lv_obj_t *bat_label[2];
 
-/* ── helpers ─────────────────────────────────────────────────────── */
+static const char *const bat_sides[2] = {"L", "R"};
+
 static lv_color_t bat_color(uint8_t pct) {
     if (pct > 60) return lv_color_hex(CLR_GREEN);
     if (pct > 20) return lv_color_hex(CLR_AMBER);
     return lv_color_hex(CLR_RED);
 }
 
-/* ── render: called on the dedicated display work queue ───────────── */
+static lv_obj_t *make_separator(lv_obj_t *parent, lv_align_t align, int y_ofs) {
+    lv_obj_t *sep = lv_obj_create(parent);
+    lv_obj_set_size(sep, 120, 1);
+    lv_obj_set_style_bg_color(sep, lv_color_hex(CLR_DIM), 0);
+    lv_obj_set_style_bg_opa(sep, LV_OPA_40, 0);
+    lv_obj_set_style_border_width(sep, 0, 0);
+    lv_obj_set_style_radius(sep, 0, 0);
+    lv_obj_align(sep, align, 0, y_ofs);
+    return sep;
+}
+
 static void do_render(struct k_work *work) {
-    /* connection label */
     char conn_buf[24];
     if (g.endpoint.transport == ZMK_TRANSPORT_USB) {
         lv_obj_set_style_text_color(conn_label, lv_color_hex(CLR_GREEN), 0);
@@ -89,30 +95,27 @@ static void do_render(struct k_work *work) {
     }
     lv_label_set_text(conn_label, conn_buf);
 
-    /* layer name */
-    if (g.layer_name && g.layer_name[0]) {
-        lv_label_set_text(layer_name_label, g.layer_name);
+    const char *name = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(g.layer_index));
+    if (name && name[0]) {
+        lv_label_set_text(layer_name_label, name);
     } else {
         char tmp[8];
         snprintf(tmp, sizeof(tmp), "#%u", g.layer_index);
         lv_label_set_text(layer_name_label, tmp);
     }
 
-    /* layer number */
     char num_buf[8];
     snprintf(num_buf, sizeof(num_buf), "#%u", g.layer_index);
     lv_label_set_text(layer_num_label, num_buf);
 
-    /* battery labels: "L 85%" / "R  ?" */
-    static const char *const sides[2] = {"L", "R"};
     for (int i = 0; i < 2; i++) {
         char buf[12];
         if (g.bat_known[i]) {
             lv_obj_set_style_text_color(bat_label[i], bat_color(g.bat[i]), 0);
-            snprintf(buf, sizeof(buf), "%s %u%%", sides[i], g.bat[i]);
+            snprintf(buf, sizeof(buf), "%s %u%%", bat_sides[i], g.bat[i]);
         } else {
             lv_obj_set_style_text_color(bat_label[i], lv_color_hex(CLR_DIM), 0);
-            snprintf(buf, sizeof(buf), "%s  ?", sides[i]);
+            snprintf(buf, sizeof(buf), "%s  ?", bat_sides[i]);
         }
         lv_label_set_text(bat_label[i], buf);
     }
@@ -124,11 +127,10 @@ static void schedule_render(void) {
     k_work_submit_to_queue(zmk_display_work_q(), &render_work);
 }
 
-/* ── event handlers ──────────────────────────────────────────────── */
 static int on_layer_changed(const zmk_event_t *eh) {
     zmk_keymap_layer_index_t idx = zmk_keymap_highest_layer_active();
+    if (idx == g.layer_index) return ZMK_EV_EVENT_BUBBLE;
     g.layer_index = idx;
-    g.layer_name  = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(idx));
     schedule_render();
     return ZMK_EV_EVENT_BUBBLE;
 }
@@ -150,6 +152,8 @@ static int on_peripheral_battery(const zmk_event_t *eh) {
     const struct zmk_peripheral_battery_state_changed *ev =
         as_zmk_peripheral_battery_state_changed(eh);
     if (!ev || ev->source >= 2) return ZMK_EV_EVENT_BUBBLE;
+    if (g.bat_known[ev->source] && g.bat[ev->source] == ev->state_of_charge)
+        return ZMK_EV_EVENT_BUBBLE;
     g.bat[ev->source]       = ev->state_of_charge;
     g.bat_known[ev->source] = true;
     schedule_render();
@@ -158,7 +162,6 @@ static int on_peripheral_battery(const zmk_event_t *eh) {
 ZMK_LISTENER(dongle_battery, on_peripheral_battery);
 ZMK_SUBSCRIPTION(dongle_battery, zmk_peripheral_battery_state_changed);
 
-/* ── screen construction ─────────────────────────────────────────── */
 lv_obj_t *zmk_display_status_screen(void) {
     lv_obj_t *screen = lv_obj_create(NULL);
     lv_obj_set_size(screen, 240, 280);
@@ -166,23 +169,14 @@ lv_obj_t *zmk_display_status_screen(void) {
     lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, 0);
     lv_obj_clear_flag(screen, LV_OBJ_FLAG_SCROLLABLE);
 
-    /* ── connection label (top centre, y≈50) ── */
     conn_label = lv_label_create(screen);
     lv_obj_set_style_text_font(conn_label, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(conn_label, lv_color_hex(CLR_DIM), 0);
     lv_label_set_text(conn_label, LV_SYMBOL_WIFI " ...");
     lv_obj_align(conn_label, LV_ALIGN_TOP_MID, 0, 46);
 
-    /* ── thin separator line below connection ── */
-    lv_obj_t *sep1 = lv_obj_create(screen);
-    lv_obj_set_size(sep1, 120, 1);
-    lv_obj_set_style_bg_color(sep1, lv_color_hex(CLR_DIM), 0);
-    lv_obj_set_style_bg_opa(sep1, LV_OPA_40, 0);
-    lv_obj_set_style_border_width(sep1, 0, 0);
-    lv_obj_set_style_radius(sep1, 0, 0);
-    lv_obj_align(sep1, LV_ALIGN_TOP_MID, 0, 72);
+    make_separator(screen, LV_ALIGN_TOP_MID, 72);
 
-    /* ── layer name (centre, large) ── */
     layer_name_label = lv_label_create(screen);
     lv_obj_set_style_text_font(layer_name_label, &lv_font_montserrat_28, 0);
     lv_obj_set_style_text_color(layer_name_label, lv_color_hex(CLR_FG), 0);
@@ -192,23 +186,14 @@ lv_obj_t *zmk_display_status_screen(void) {
     lv_label_set_text(layer_name_label, "...");
     lv_obj_align(layer_name_label, LV_ALIGN_CENTER, 0, -18);
 
-    /* ── layer number (below name, small dimmed) ── */
     layer_num_label = lv_label_create(screen);
     lv_obj_set_style_text_font(layer_num_label, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(layer_num_label, lv_color_hex(CLR_DIM), 0);
     lv_label_set_text(layer_num_label, "#0");
     lv_obj_align(layer_num_label, LV_ALIGN_CENTER, 0, 32);
 
-    /* ── thin separator above battery row ── */
-    lv_obj_t *sep2 = lv_obj_create(screen);
-    lv_obj_set_size(sep2, 120, 1);
-    lv_obj_set_style_bg_color(sep2, lv_color_hex(CLR_DIM), 0);
-    lv_obj_set_style_bg_opa(sep2, LV_OPA_40, 0);
-    lv_obj_set_style_border_width(sep2, 0, 0);
-    lv_obj_set_style_radius(sep2, 0, 0);
-    lv_obj_align(sep2, LV_ALIGN_BOTTOM_MID, 0, -68);
+    make_separator(screen, LV_ALIGN_BOTTOM_MID, -68);
 
-    /* ── battery labels: L on left, R on right ── */
     bat_label[0] = lv_label_create(screen);
     lv_obj_set_style_text_font(bat_label[0], &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(bat_label[0], lv_color_hex(CLR_DIM), 0);
@@ -221,10 +206,7 @@ lv_obj_t *zmk_display_status_screen(void) {
     lv_label_set_text(bat_label[1], "R  ?");
     lv_obj_align(bat_label[1], LV_ALIGN_BOTTOM_RIGHT, -30, -40);
 
-    /* seed initial state */
-    zmk_keymap_layer_index_t idx = zmk_keymap_highest_layer_active();
-    g.layer_index = idx;
-    g.layer_name  = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(idx));
+    g.layer_index   = zmk_keymap_highest_layer_active();
     g.endpoint      = zmk_endpoints_get_selected();
     g.ble_connected = zmk_ble_active_profile_is_connected();
     g.ble_bonded    = !zmk_ble_active_profile_is_open();
