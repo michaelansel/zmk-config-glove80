@@ -1,0 +1,45 @@
+if SHIELD_GLOVE80_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "Glove80"
+
+config ZMK_SPLIT
+    default y
+
+config ZMK_SPLIT_BLE
+    default y
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 2
+
+config ZMK_DISPLAY
+    default y
+
+config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    default y
+
+config ZMK_DISPLAY_WORK_QUEUE_DEDICATED
+    default y
+
+config LV_Z_VDB_SIZE
+    default 20
+
+config LV_Z_MEM_POOL_SIZE
+    default 8192
+
+config LV_FONT_MONTSERRAT_28
+    default y
+
+config LV_FONT_MONTSERRAT_14
+    default y
+
+config LV_USE_ARC
+    default y
+
+config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
+    default y
+
+endif

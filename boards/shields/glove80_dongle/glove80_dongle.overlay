@@ -1,11 +1,8 @@
 // Dongle central for Glove80 three-device split.
 // Provides the Glove80 matrix transform so the keymap can reference all 80 key positions.
 // No kscan needed: actual key scanning is done by the left and right peripheral halves.
-//
-// QSPI flash config mirrors what the moergo ZMK fork's seeeduino_xiao_ble.overlay
-// provides, but that overlay is removed in the Nix preConfigure hook to avoid
-// a duplicate-output error caused by BOARD_ROOT equalling APPLICATION_SOURCE_DIR.
-// Battery monitoring is omitted — the dongle is USB-powered.
+// QSPI flash and serial disable are already in the upstream xiao_ble_zmk.dts.
+// Display SPI is configured in boards/xiao_ble.overlay.
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
@@ -26,31 +23,5 @@
             RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5) RC(0,6) RC(1,6) RC(2,6)   RC(2,7) RC(1,7)  RC(0,7) RC(4,8) RC(4,9) RC(4,10) RC(4,11) RC(4,12) RC(4,13)
             RC(5,0) RC(5,1) RC(5,2) RC(5,3) RC(5,4)         RC(3,6) RC(4,6) RC(5,6)   RC(5,7) RC(4,7)  RC(3,7)         RC(5,9) RC(5,10) RC(5,11) RC(5,12) RC(5,13)
         >;
-    };
-};
-
-// QSPI NOR flash for ZMK settings storage (BLE profiles, etc.)
-&xiao_serial { status = "disabled"; };
-
-&qspi {
-    status = "okay";
-    pinctrl-0 = <&qspi_default>;
-    pinctrl-1 = <&qspi_sleep>;
-    pinctrl-names = "default", "sleep";
-    p25q16h: p25q16h@0 {
-        compatible = "nordic,qspi-nor";
-        reg = <0>;
-        sck-frequency = <104000000>;
-        quad-enable-requirements = "S2B1v1";
-        jedec-id = [85 60 15];
-        sfdp-bfp = [
-            e5 20 f1 ff  ff ff ff 00  44 eb 08 6b  08 3b 80 bb
-            ee ff ff ff  ff ff 00 ff  ff ff 00 ff  0c 20 0f 52
-            10 d8 08 81
-        ];
-        size = <16777216>;
-        has-dpd;
-        t-enter-dpd = <3000>;
-        t-exit-dpd = <8000>;
     };
 };

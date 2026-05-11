@@ -1,0 +1,8 @@
+include:
+  - board: glove80_lh
+    artifact-name: glove80_left
+  - board: glove80_rh
+    artifact-name: glove80_right
+  - board: xiao_ble
+    shield: glove80_dongle
+    artifact-name: glove80_dongle
