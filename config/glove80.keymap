@@ -22,6 +22,10 @@
 #define UNI          6
 #define WIN          7
 #define GAME         8
+#define WIN_MOVE     9
+#define WIN_SWAP     10
+#define WIN_JOIN     11
+#define WIN_RESIZE   12
 
 // Hammerspoon Hyper-key triggers (HYPER is defined in glove80.keymap)
 #define HS_WARP HYPER(A) // Launch warpd
@@ -49,26 +53,14 @@
 #define MAG_MAX LC(LA(ENTER))
 #define MAG_RST LC(LA(BSPC))
 
-// Aerospace.app
-#define AE_EQLS LC(LA(EQUAL))        // balance-sizes
-#define AE_FULL LC(LA(LS(EQUAL)))    // fullscreen
-#define AE_FO_D LC(LA(J))            // focus down
-#define AE_FO_L LC(LA(H))            // focus left
-#define AE_FO_R LC(LA(L))            // focus right
-#define AE_FO_U LC(LA(K))            // focus up
-#define AE_JO_D LC(LA(LG(J)))        // join-with down
-#define AE_JO_L LC(LA(LG(H)))        // join-with left
-#define AE_JO_R LC(LA(LG(L)))        // join-with right
-#define AE_JO_U LC(LA(LG(K)))        // join-with up
-#define AE_MV_D LC(LA(LS(J)))        // move down
-#define AE_MV_L LC(LA(LS(H)))        // move left
-#define AE_MV_R LC(LA(LS(L)))        // move right
-#define AE_MV_U LC(LA(LS(K)))        // move up
-#define AE_TGAC LC(LA(COMMA))        // layout tiles accordion
-#define AE_TGFT LC(LA(DOT))          // layout floating tiling
-#define AE_TGRT LC(LA(FSLH))         // layout horizontal vertical
-#define AE_TRST LC(LA(SQT))          // flatten-workspace-tree
-#define AE_FMON lk_aero_foc_mon      // focus-monitor --wrap-around next (leader key macro)
+// Aerospace.app — hyper chord triggers action mode; macros append the verb key
+#define AE_CHORD HYPER(SPACE)
+
+// WIN layer LH home-row hold-taps: hold=sublayer, tap=sticky mod
+#define SK_PINKY lsm 0 LCTRL
+#define SK_JOIN  lsm WIN_JOIN LALT
+#define SK_SWAP  lsm WIN_SWAP LGUI
+#define SK_MOVE  lsm WIN_MOVE LSHFT
 
 
 / {
@@ -111,6 +103,22 @@
             #binding-cells = <2>;
             tapping-term-ms = <200>;
         };
+
+        lsm: layer_or_sticky_key {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <100>;
+            bindings = <&mo>, <&sk>;
+        };
+
+        td_send: tap_dance_send {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <250>;
+            bindings = <&ae_send_mode>, <&ae_send_empty>, <&ae_send_empty_follow>;
+        };
     };
 
     macros {
@@ -144,8 +152,297 @@
             bindings = <&out OUT_BLE &bt BT_SEL 3>;
         };
 
+        // Aerospace macros — each fires AE_CHORD then the verb key
+
+        ae_focus_l: ae_focus_l {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp J>;
+        };
+
+        ae_focus_d: ae_focus_d {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp K>;
+        };
+
+        ae_focus_r: ae_focus_r {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp L>;
+        };
+
+        ae_focus_u: ae_focus_u {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp I>;
+        };
+
+        ae_move_l: ae_move_l {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LS(J)>;
+        };
+
+        ae_move_d: ae_move_d {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LS(K)>;
+        };
+
+        ae_move_r: ae_move_r {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LS(L)>;
+        };
+
+        ae_move_u: ae_move_u {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LS(I)>;
+        };
+
+        ae_swap_l: ae_swap_l {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(J)>;
+        };
+
+        ae_swap_d: ae_swap_d {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(K)>;
+        };
+
+        ae_swap_r: ae_swap_r {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(L)>;
+        };
+
+        ae_swap_u: ae_swap_u {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(I)>;
+        };
+
+        ae_join_l: ae_join_l {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LA(J)>;
+        };
+
+        ae_join_d: ae_join_d {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LA(K)>;
+        };
+
+        ae_join_r: ae_join_r {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LA(L)>;
+        };
+
+        ae_join_u: ae_join_u {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LA(I)>;
+        };
+
+        ae_resize_minus_w: ae_resize_minus_w {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(LS(J))>;
+        };
+
+        ae_resize_plus_w: ae_resize_plus_w {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(LS(L))>;
+        };
+
+        ae_resize_minus_h: ae_resize_minus_h {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(LS(I))>;
+        };
+
+        ae_resize_plus_h: ae_resize_plus_h {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(LS(K))>;
+        };
+
+        ae_close: ae_close {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp W>;
+        };
+
+        ae_ws_prev: ae_ws_prev {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp U>;
+        };
+
+        ae_ws_next: ae_ws_next {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp O>;
+        };
+
+        ae_float_tile: ae_float_tile {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp P>;
+        };
+
+        ae_tiles_acc: ae_tiles_acc {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp SEMI>;
+        };
+
+        ae_horiz_vert: ae_horiz_vert {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp FSLH>;
+        };
+
+        ae_balance: ae_balance {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp G>;
+        };
+
+        ae_reset: ae_reset {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp B>;
+        };
+
+        ae_dfs_prev: ae_dfs_prev {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp M>;
+        };
+
+        ae_focus_mon: ae_focus_mon {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp H>;
+        };
+
+        ae_dfs_next: ae_dfs_next {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp DOT>;
+        };
+
+        ae_back_forth: ae_back_forth {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp SQT>;
+        };
+
+        ae_fullscreen: ae_fullscreen {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp F>;
+        };
+
+        ae_send_mode: ae_send_mode {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp Y>;
+        };
+
+        ae_send_empty: ae_send_empty {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LS(Y)>;
+        };
+
+        ae_send_empty_follow: ae_send_empty_follow {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings = <&kp AE_CHORD>, <&kp LG(LS(Y))>;
+        };
+
         // Leader Key sequences
-        // Aerospace Focus Next Monitor
 
         lk_aero_foc_mon: lk_aero_focus_monitor_macro {
             compatible = "zmk,behavior-macro";
@@ -187,6 +484,14 @@
             key-positions = <36 37 42 43>;   // S + D + K + L
             bindings = <&caps_word>;
             layers = <BASE>;
+        };
+    };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        resize_combo {
+            if-layers = <WIN_MOVE WIN_SWAP>;
+            then-layer = <WIN_RESIZE>;
         };
     };
 
@@ -303,15 +608,15 @@
         // WIN 7
 
         win_layer {
-            // WIN: Aerospace window management
+            // WIN: Aerospace window management via AE_CHORD + verb dispatch
 
             bindings = <
-&none   &none      &none     &none     &none                                                                                       &none        &none        &none        &none        &none
-&none   &none      &none     &none     &none      &none                                                               &none        &none        &none        &none        &none        &none
-&none   &AE_FMON   &none     &none     &none      &kp AE_FULL                                                         &kp AE_MV_L  &kp AE_MV_D  &kp AE_MV_U  &kp AE_MV_R  &kp AE_TGFT  &none
-&none   &sk LCTRL  &sk LALT  &sk LGUI  &sk LSHFT  &kp AE_EQLS                                                         &kp AE_FO_L  &kp AE_FO_D  &kp AE_FO_U  &kp AE_FO_R  &kp AE_TGAC  &none
-&none   &none      &none     &none     &none      &kp AE_TRST  &trans  &none  &none  &none  &kp HS_MENU  &kp LEADERK  &kp AE_JO_L  &kp AE_JO_D  &kp AE_JO_U  &kp AE_JO_R  &kp AE_TGRT  &none
-&trans  &none      &none     &none     &none                   &none   &none  &none  &none  &none        &kp LEADERK               &none        &none        &none        &none        &none
+&none  &none      &none      &none     &none                                                                                          &none         &none        &none         &none           &none
+&none  &none      &none      &none     &none     &none                                                                 &none          &none         &none        &none         &none           &none
+&none  &none      &ae_close  &none     &none     &none                                                                 &td_send       &ae_ws_prev   &ae_focus_u  &ae_ws_next   &ae_float_tile  &none
+&none  &SK_PINKY  &SK_JOIN   &SK_SWAP  &SK_MOVE  &ae_balance                                                           &ae_focus_mon  &ae_focus_l   &ae_focus_d  &ae_focus_r   &ae_tiles_acc   &ae_back_forth
+&none  &none      &none      &none     &none     &ae_reset    &none  &none  &none  &none  &none           &none        &none          &ae_dfs_prev  &none        &ae_dfs_next  &ae_horiz_vert  &none
+&none  &none      &none      &none     &none                  &none  &none  &none  &none  &ae_fullscreen  &kp LEADERK                 &none         &none        &none         &none           &none
             >;
         };
 
@@ -327,6 +632,58 @@
 &kp G      &kp TAB    &kp Q   &kp W   &kp E   &kp R                                                               &kp H   &kp J   &kp K      &kp L     &kp SEMI  &kp SQT
 &kp B      &kp LSHFT  &kp A   &kp S   &kp D   &kp F   &none      &none      &none  &none     &kp UP    &none      &kp N   &kp M   &kp COMMA  &kp DOT   &kp FSLH  &none
 &kp V      &kp LCTRL  &kp Z   &kp X   &kp C           &kp SPACE  &kp LCTRL  &none  &kp LEFT  &kp DOWN  &kp RIGHT          &none   &none      &kp LBKT  &kp RBKT  &to BASE
+            >;
+        };
+
+        // WIN_MOVE 9
+
+        win_move_layer {
+            bindings = <
+&none  &none  &none  &none  &none                                                          &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none       &ae_move_u  &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &ae_move_l  &ae_move_d  &ae_move_r  &none  &none
+&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
+            >;
+        };
+
+        // WIN_SWAP 10
+
+        win_swap_layer {
+            bindings = <
+&none  &none  &none  &none  &none                                                          &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none       &ae_swap_u  &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &ae_swap_l  &ae_swap_d  &ae_swap_r  &none  &none
+&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
+            >;
+        };
+
+        // WIN_JOIN 11
+
+        win_join_layer {
+            bindings = <
+&none  &none  &none  &none  &none                                                          &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none       &ae_join_u  &none       &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &ae_join_l  &ae_join_d  &ae_join_r  &none  &none
+&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
+&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
+            >;
+        };
+
+        // WIN_RESIZE 12
+
+        win_resize_layer {
+            bindings = <
+&none  &none  &none  &none  &none                                                          &none               &none               &none              &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none               &none               &none              &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &none               &ae_resize_minus_h  &none              &none  &none
+&none  &none  &none  &none  &none  &none                                            &none  &ae_resize_minus_w  &ae_resize_plus_h   &ae_resize_plus_w  &none  &none
+&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none               &none               &none              &none  &none
+&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none               &none               &none              &none  &none
             >;
         };
     };
