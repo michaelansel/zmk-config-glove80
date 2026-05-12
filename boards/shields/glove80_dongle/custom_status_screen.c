@@ -138,7 +138,7 @@ ZMK_LISTENER(dongle_layer, on_layer_changed);
 ZMK_SUBSCRIPTION(dongle_layer, zmk_layer_state_changed);
 
 static int on_endpoint_changed(const zmk_event_t *eh) {
-    g.endpoint      = zmk_endpoints_get_selected();
+    g.endpoint      = zmk_endpoint_get_selected();
     g.ble_connected = zmk_ble_active_profile_is_connected();
     g.ble_bonded    = !zmk_ble_active_profile_is_open();
     schedule_render();
@@ -167,7 +167,7 @@ lv_obj_t *zmk_display_status_screen(void) {
     lv_obj_set_size(screen, 240, 280);
     lv_obj_set_style_bg_color(screen, lv_color_hex(CLR_BG), 0);
     lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, 0);
-    lv_obj_clear_flag(screen, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_remove_flag(screen, LV_OBJ_FLAG_SCROLLABLE);
 
     conn_label = lv_label_create(screen);
     lv_obj_set_style_text_font(conn_label, &lv_font_montserrat_14, 0);
@@ -181,7 +181,7 @@ lv_obj_t *zmk_display_status_screen(void) {
     lv_obj_set_style_text_font(layer_name_label, &lv_font_montserrat_28, 0);
     lv_obj_set_style_text_color(layer_name_label, lv_color_hex(CLR_FG), 0);
     lv_obj_set_style_text_align(layer_name_label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_label_set_long_mode(layer_name_label, LV_LABEL_LONG_WRAP);
+    lv_label_set_long_mode(layer_name_label, LV_LABEL_LONG_MODE_WRAP);
     lv_obj_set_width(layer_name_label, 200);
     lv_label_set_text(layer_name_label, "...");
     lv_obj_align(layer_name_label, LV_ALIGN_CENTER, 0, -18);
@@ -207,7 +207,7 @@ lv_obj_t *zmk_display_status_screen(void) {
     lv_obj_align(bat_label[1], LV_ALIGN_BOTTOM_RIGHT, -30, -40);
 
     g.layer_index   = zmk_keymap_highest_layer_active();
-    g.endpoint      = zmk_endpoints_get_selected();
+    g.endpoint      = zmk_endpoint_get_selected();
     g.ble_connected = zmk_ble_active_profile_is_connected();
     g.ble_bonded    = !zmk_ble_active_profile_is_open();
 
