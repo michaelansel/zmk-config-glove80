@@ -157,7 +157,7 @@
         ae_focus_l: ae_focus_l {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp J>;
         };
@@ -165,7 +165,7 @@
         ae_focus_d: ae_focus_d {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp K>;
         };
@@ -173,7 +173,7 @@
         ae_focus_r: ae_focus_r {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp L>;
         };
@@ -181,7 +181,7 @@
         ae_focus_u: ae_focus_u {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp I>;
         };
@@ -189,7 +189,7 @@
         ae_move_l: ae_move_l {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LS(J)>;
         };
@@ -197,7 +197,7 @@
         ae_move_d: ae_move_d {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LS(K)>;
         };
@@ -205,7 +205,7 @@
         ae_move_r: ae_move_r {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LS(L)>;
         };
@@ -213,7 +213,7 @@
         ae_move_u: ae_move_u {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LS(I)>;
         };
@@ -221,7 +221,7 @@
         ae_swap_l: ae_swap_l {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(J)>;
         };
@@ -229,7 +229,7 @@
         ae_swap_d: ae_swap_d {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(K)>;
         };
@@ -237,7 +237,7 @@
         ae_swap_r: ae_swap_r {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(L)>;
         };
@@ -245,7 +245,7 @@
         ae_swap_u: ae_swap_u {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(I)>;
         };
@@ -253,7 +253,7 @@
         ae_join_l: ae_join_l {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LA(J)>;
         };
@@ -261,7 +261,7 @@
         ae_join_d: ae_join_d {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LA(K)>;
         };
@@ -269,7 +269,7 @@
         ae_join_r: ae_join_r {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LA(L)>;
         };
@@ -277,7 +277,7 @@
         ae_join_u: ae_join_u {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LA(I)>;
         };
@@ -285,7 +285,7 @@
         ae_resize_minus_w: ae_resize_minus_w {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(LS(J))>;
         };
@@ -293,7 +293,7 @@
         ae_resize_plus_w: ae_resize_plus_w {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(LS(L))>;
         };
@@ -301,7 +301,7 @@
         ae_resize_minus_h: ae_resize_minus_h {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(LS(I))>;
         };
@@ -309,7 +309,7 @@
         ae_resize_plus_h: ae_resize_plus_h {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(LS(K))>;
         };
@@ -317,7 +317,7 @@
         ae_close: ae_close {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp W>;
         };
@@ -325,7 +325,7 @@
         ae_ws_prev: ae_ws_prev {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp U>;
         };
@@ -333,7 +333,7 @@
         ae_ws_next: ae_ws_next {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp O>;
         };
@@ -341,7 +341,7 @@
         ae_float_tile: ae_float_tile {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp P>;
         };
@@ -349,7 +349,7 @@
         ae_tiles_acc: ae_tiles_acc {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp SEMI>;
         };
@@ -357,7 +357,7 @@
         ae_horiz_vert: ae_horiz_vert {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp FSLH>;
         };
@@ -365,7 +365,7 @@
         ae_balance: ae_balance {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp G>;
         };
@@ -373,7 +373,7 @@
         ae_reset: ae_reset {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp B>;
         };
@@ -381,7 +381,7 @@
         ae_dfs_prev: ae_dfs_prev {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp M>;
         };
@@ -389,7 +389,7 @@
         ae_focus_mon: ae_focus_mon {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp H>;
         };
@@ -397,7 +397,7 @@
         ae_dfs_next: ae_dfs_next {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp DOT>;
         };
@@ -405,7 +405,7 @@
         ae_back_forth: ae_back_forth {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp SQT>;
         };
@@ -413,7 +413,7 @@
         ae_fullscreen: ae_fullscreen {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp F>;
         };
@@ -421,7 +421,7 @@
         ae_send_mode: ae_send_mode {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp Y>;
         };
@@ -429,7 +429,7 @@
         ae_send_empty: ae_send_empty {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LS(Y)>;
         };
@@ -437,7 +437,7 @@
         ae_send_empty_follow: ae_send_empty_follow {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            wait-ms = <20>;
+            wait-ms = <200>;
             tap-ms = <20>;
             bindings = <&kp AE_CHORD>, <&kp LG(LS(Y))>;
         };
