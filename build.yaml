@@ -3,6 +3,12 @@ include:
     artifact-name: glove80_left
   - board: glove80_rh
     artifact-name: glove80_right
+  - board: glove80_lh
+    shield: settings_reset
+    artifact-name: glove80_left_reset
+  - board: glove80_rh
+    shield: settings_reset
+    artifact-name: glove80_right_reset
   - board: nice_nano//zmk
     shield: glove80_dongle
     artifact-name: glove80_dongle
