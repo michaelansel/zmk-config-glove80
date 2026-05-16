@@ -46,11 +46,11 @@ _build() {
 case "${TARGET:-all}" in
     left)   _build glove80_lh  ""             glove80_left   ;;
     right)  _build glove80_rh  ""             glove80_right  ;;
-    dongle) _build xiao_ble    glove80_dongle glove80_dongle ;;
+    dongle) _build nice_nano//zmk    glove80_dongle glove80_dongle ;;
     all)
         _build glove80_lh  ""             glove80_left
         _build glove80_rh  ""             glove80_right
-        _build xiao_ble    glove80_dongle glove80_dongle
+        _build nice_nano//zmk    glove80_dongle glove80_dongle
         ;;
     *) echo "Unknown target: ${TARGET}. Use: left|right|dongle|all" >&2; exit 1 ;;
 esac
