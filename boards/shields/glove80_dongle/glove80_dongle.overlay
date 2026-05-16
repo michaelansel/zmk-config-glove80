@@ -1,8 +1,6 @@
 // Dongle central for Glove80 three-device split.
 // Provides the Glove80 matrix transform so the keymap can reference all 80 key positions.
 // No kscan needed: actual key scanning is done by the left and right peripheral halves.
-// QSPI flash and serial disable are already in the upstream xiao_ble_zmk.dts.
-// Display SPI is configured in boards/xiao_ble.overlay.
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
