@@ -44,16 +44,33 @@ _build() {
 }
 
 case "${TARGET:-all}" in
-    left)   _build glove80_lh  ""             glove80_left   ;;
-    right)  _build glove80_rh  ""             glove80_right  ;;
-    dongle) _build nice_nano//zmk    glove80_dongle glove80_dongle ;;
-    all)
-        _build glove80_lh  ""             glove80_left
-        _build glove80_rh  ""             glove80_right
-        _build nice_nano//zmk    glove80_dongle glove80_dongle
+    left)   _build glove80_lh     ""             glove80_left   ;;
+    right)  _build glove80_rh     ""             glove80_right  ;;
+    dongle) _build nice_nano//zmk glove80_dongle glove80_dongle ;;
+    reset)
+        _build glove80_lh ""             glove80_left_reset
+        _build glove80_rh ""             glove80_right_reset
         ;;
-    *) echo "Unknown target: ${TARGET}. Use: left|right|dongle|all" >&2; exit 1 ;;
+    all)
+        _build glove80_lh     ""             glove80_left
+        _build glove80_rh     ""             glove80_right
+        _build nice_nano//zmk glove80_dongle glove80_dongle
+        _build glove80_lh     settings_reset glove80_left_reset
+        _build glove80_rh     settings_reset glove80_right_reset
+        ;;
+    *) echo "Unknown target: ${TARGET}. Use: left|right|dongle|reset|all" >&2; exit 1 ;;
 esac
+
+if [[ "${TARGET:-all}" == "all" ]]; then
+    echo ""
+    echo "=== Bundling ==="
+    cat /zmk-config/glove80_left.uf2 /zmk-config/glove80_right.uf2 /zmk-config/glove80_dongle.uf2 \
+        > /zmk-config/glove80_bundle.uf2
+    echo "  → /zmk-config/glove80_bundle.uf2"
+    cat /zmk-config/glove80_left_reset.uf2 /zmk-config/glove80_right_reset.uf2 \
+        > /zmk-config/glove80_reset_bundle.uf2
+    echo "  → /zmk-config/glove80_reset_bundle.uf2"
+fi
 
 echo ""
 echo "Done."

@@ -7,3 +7,27 @@ jobs:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
     with:
       archive_name: glove80-dongle-firmware
+
+  bundle:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download firmware
+        uses: actions/download-artifact@v4
+        with:
+          name: glove80-dongle-firmware
+          path: firmware
+
+      - name: Create normal bundle (left + right + dongle)
+        run: cat firmware/glove80_left.uf2 firmware/glove80_right.uf2 firmware/glove80_dongle.uf2 > firmware/glove80_bundle.uf2
+
+      - name: Create reset bundle (left + right)
+        run: cat firmware/glove80_left_reset.uf2 firmware/glove80_right_reset.uf2 > firmware/glove80_reset_bundle.uf2
+
+      - name: Upload bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: glove80-bundles
+          path: |
+            firmware/glove80_bundle.uf2
+            firmware/glove80_reset_bundle.uf2
