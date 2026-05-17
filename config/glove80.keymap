@@ -479,6 +479,13 @@
             bindings = <&caps_word>;
             layers = <BASE>;
         };
+
+        combo_dongle_bootloader {
+            timeout-ms = <500>;
+            key-positions = <34 45>;   // MAGIC: left pinky + right pinky (both half bootloaders)
+            bindings = <&bootloader>;
+            layers = <MAGIC>;
+        };
     };
 
     conditional_layers {
@@ -496,7 +503,7 @@
 
         base_layer {
             // ---------------------------------------------------------------------------------------------------------------------------------------
-            // | ESC   |NONE |NONE |NONE | NONE |                                                                    | NONE |NONE |NONE | NONE | BOOT |
+            // | ESC   |NONE |NONE |NONE | NONE |                                                                    | NONE |NONE |NONE | NONE | NONE |
             // | NONE  |  1  |  2  |  3  |  4   |  5   |                                                    |  6   |  7   |  8  |  9  |  0   |  -   |
             // | NONE  |  Q  |  W  |  E  |  R   |  T   |                                                    |  Y   |  U   |  I  |  O  |  P   |  \   |
             // | NONE  |  A  |  S  |  D  |  F   |  G   |                                                    |  H   |  J   |  K  |  L  |  ;   |  '   |
@@ -504,7 +511,7 @@
             // | MAGIC |LCTL |LALT |LGUI |LSHFT |       | MO(SYM)| MO(NAV)| NONE | NONE  | ENT   | SYM/SPC|      | RSHFT| RGUI| RALT| RCTL | NONE |
 
             bindings = <
-&kp ESC         &none      &none     &none     &none                                                                                &none      &none      &none     &none      &bootloader
+&kp ESC         &none      &none     &none     &none                                                                                &none      &none      &none     &none      &none
 &none           &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                            &kp N6  &kp N7     &kp N8     &kp N9    &kp N0     &kp MINUS
 &none           &kp Q      &kp W     &kp E     &kp R      &kp T                                                             &kp Y   &kp U      &kp I      &kp O     &kp P      &none
 &caps_word      &kp A      &kp S     &kp D     &kp F      &kp G                                                             &kp H   &kp J      &kp K      &kp L     &kp SEMI   &kp SQT
