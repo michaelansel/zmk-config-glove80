@@ -9,6 +9,7 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/mouse.h>
 
 #define HYPER(X) LC(LS(LG(LA(X))))
 
@@ -26,6 +27,9 @@
 #define WIN_SWAP     10
 #define WIN_JOIN     11
 #define WIN_RESIZE   12
+#define MOUSE        13
+#define MOUSE_SLOW   14
+#define MOUSE_FAST   15
 
 // Hammerspoon Hyper-key triggers (HYPER is defined in glove80.keymap)
 #define HS_WARP HYPER(A) // Launch warpd
@@ -55,6 +59,24 @@
 
 // Aerospace.app — hyper chord triggers action mode; macros append the verb key
 #define AE_CHORD HYPER(SPACE)
+
+// Mouse speed overlay macros — hold E (slow) or R (fast) while scrolling/moving
+#define SCRL_UP_LO    MOVE_Y(ZMK_POINTING_DEFAULT_SCRL_VAL / 3)
+#define SCRL_DOWN_LO  MOVE_Y(-(ZMK_POINTING_DEFAULT_SCRL_VAL / 3))
+#define SCRL_LEFT_LO  MOVE_X(-(ZMK_POINTING_DEFAULT_SCRL_VAL / 3))
+#define SCRL_RIGHT_LO MOVE_X(ZMK_POINTING_DEFAULT_SCRL_VAL / 3)
+#define SCRL_UP_HI    MOVE_Y(ZMK_POINTING_DEFAULT_SCRL_VAL * 3)
+#define SCRL_DOWN_HI  MOVE_Y(-(ZMK_POINTING_DEFAULT_SCRL_VAL * 3))
+#define SCRL_LEFT_HI  MOVE_X(-(ZMK_POINTING_DEFAULT_SCRL_VAL * 3))
+#define SCRL_RIGHT_HI MOVE_X(ZMK_POINTING_DEFAULT_SCRL_VAL * 3)
+#define MOVE_UP_LO    MOVE_Y(-(ZMK_POINTING_DEFAULT_MOVE_VAL / 3))
+#define MOVE_DOWN_LO  MOVE_Y(ZMK_POINTING_DEFAULT_MOVE_VAL / 3)
+#define MOVE_LEFT_LO  MOVE_X(-(ZMK_POINTING_DEFAULT_MOVE_VAL / 3))
+#define MOVE_RIGHT_LO MOVE_X(ZMK_POINTING_DEFAULT_MOVE_VAL / 3)
+#define MOVE_UP_HI    MOVE_Y(-(ZMK_POINTING_DEFAULT_MOVE_VAL * 3))
+#define MOVE_DOWN_HI  MOVE_Y(ZMK_POINTING_DEFAULT_MOVE_VAL * 3)
+#define MOVE_LEFT_HI  MOVE_X(-(ZMK_POINTING_DEFAULT_MOVE_VAL * 3))
+#define MOVE_RIGHT_HI MOVE_X(ZMK_POINTING_DEFAULT_MOVE_VAL * 3)
 
 // WIN layer LH home-row hold-taps: hold=sublayer, tap=sticky mod
 #define SK_PINKY lsm 0 LCTRL
@@ -511,12 +533,12 @@
             // | MAGIC |LCTL |LALT |LGUI |LSHFT |       | MO(SYM)| MO(NAV)| NONE | NONE  | ENT   | SYM/SPC|      | RSHFT| RGUI| RALT| RCTL | NONE |
 
             bindings = <
-&kp ESC         &none      &none     &none     &none                                                                                &none      &none      &none     &none      &none
-&none           &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                            &kp N6  &kp N7     &kp N8     &kp N9    &kp N0     &kp MINUS
-&none           &kp Q      &kp W     &kp E     &kp R      &kp T                                                             &kp Y   &kp U      &kp I      &kp O     &kp P      &none
-&caps_word      &kp A      &kp S     &kp D     &kp F      &kp G                                                             &kp H   &kp J      &kp K      &kp L     &kp SEMI   &kp SQT
-&none           &kp Z      &kp X     &kp C     &kp V      &kp B   &mo WIN  &none    &none  &none  &none      &sl UNI        &kp N   &kp M      &kp COMMA  &kp DOT   &kp FSLH   &none
-&magic MAGIC 0  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT          &mo SYM  &mo NAV  &none  &none  &kp ENTER  &lt SYM SPACE          &kp RSHFT  &kp RGUI   &kp RALT  &kp RCTRL  &none
+&kp ESC         &none      &none     &none     &none                                                                                         &none      &none      &none     &none      &none
+&none           &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                                     &kp N6  &kp N7     &kp N8     &kp N9    &kp N0     &kp MINUS
+&none           &kp Q      &kp W     &kp E     &kp R      &kp T                                                                      &kp Y   &kp U      &kp I      &kp O     &kp P      &none
+&caps_word      &kp A      &kp S     &kp D     &kp F      &kp G                                                                      &kp H   &kp J      &kp K      &kp L     &kp SEMI   &kp SQT
+&none           &kp Z      &kp X     &kp C     &kp V      &kp B   &mo WIN  &lht MOUSE MOUSE  &none  &none  &none      &sl UNI        &kp N   &kp M      &kp COMMA  &kp DOT   &kp FSLH   &none
+&magic MAGIC 0  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT          &mo SYM  &mo NAV           &none  &none  &kp ENTER  &lt SYM SPACE          &kp RSHFT  &kp RGUI   &kp RALT  &kp RCTRL  &none
             >;
         };
 
@@ -539,12 +561,12 @@
 
         magic_layer {
             bindings = <
-&bt BT_CLR   &none            &none            &none            &none                                                                                     &none  &none  &none  &none     &bt BT_CLR_ALL
-&none        &none            &none            &none            &none            &none                                                             &none  &none  &none  &none  &none     &none
-&none        &rgb_ug RGB_SPI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_BRI  &rgb_ug RGB_TOG                                                   &none  &none  &none  &none  &none     &none
-&bootloader  &rgb_ug RGB_SPD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF                                                   &none  &none  &none  &none  &none     &bootloader
-&sys_reset   &none            &none            &none            &none            &none            &bt_2  &bt_3  &none         &none  &none  &none  &none  &none  &none  &none  &none     &sys_reset
-&none        &none            &none            &none            &none                             &bt_0  &bt_1  &out OUT_USB  &none  &none  &none         &none  &none  &none  &to GAME  &to TEST
+&bt BT_CLR   &none            &none            &none            &none                                                                                     &none     &none  &none  &none  &bt BT_CLR_ALL
+&none        &none            &none            &none            &none            &none                                                             &none  &none     &none  &none  &none  &none
+&none        &rgb_ug RGB_SPI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_BRI  &rgb_ug RGB_TOG                                                   &none  &none     &none  &none  &none  &none
+&bootloader  &rgb_ug RGB_SPD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF                                                   &none  &none     &none  &none  &none  &bootloader
+&sys_reset   &none            &none            &none            &none            &none            &bt_2  &bt_3  &none         &none  &none  &none  &none  &none     &none  &none  &none  &sys_reset
+&none        &none            &none            &none            &none                             &bt_0  &bt_1  &out OUT_USB  &none  &none  &none         &to GAME  &none  &none  &none  &to TEST
             >;
         };
 
@@ -685,6 +707,47 @@
 &none  &none  &none  &none  &none  &none                                            &none  &ae_resize_minus_w  &ae_resize_plus_h   &ae_resize_plus_w  &none  &none
 &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none               &none               &none              &none  &none
 &none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none               &none               &none              &none  &none
+            >;
+        };
+
+        // MOUSE 13
+
+        mouse_layer {
+            // hjkl = scroll, yuio = cursor move, m/,/. = left/right/middle click, n=MB4 (back), /=MB5 (forward)
+
+            bindings = <
+&none  &none      &none     &none           &none                                                                             &none           &none         &none            &none     &none
+&none  &none      &none     &none           &none           &none                                             &none           &none           &none         &none            &none     &none
+&none  &none      &none     &mo MOUSE_SLOW  &mo MOUSE_FAST  &none                                             &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_UP  &mmv MOVE_RIGHT  &none     &none
+&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT       &none                                             &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_UP  &msc SCRL_RIGHT  &none     &none
+&none  &none      &none     &none           &none           &none  &none  &trans  &none  &none  &none  &none  &mkp MB4        &mkp MB1        &mkp MB3      &mkp MB2         &mkp MB5  &none
+&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT              &none  &none   &none  &none  &none  &none                  &none           &none         &none            &none     &none
+            >;
+        };
+
+        // MOUSE_SLOW 14 — hold Q while scrolling/moving for precision speed
+
+        mouse_slow_layer {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans                                                                             &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans             &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &mmv MOVE_LEFT_LO  &mmv MOVE_DOWN_LO  &mmv MOVE_UP_LO  &mmv MOVE_RIGHT_LO  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &msc SCRL_LEFT_LO  &msc SCRL_DOWN_LO  &msc SCRL_UP_LO  &msc SCRL_RIGHT_LO  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans             &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans                     &trans             &trans           &trans              &trans  &trans
+            >;
+        };
+
+        // MOUSE_FAST 15 — hold R while scrolling/moving for turbo speed
+
+        mouse_fast_layer {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans                                                                             &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans             &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &mmv MOVE_LEFT_HI  &mmv MOVE_DOWN_HI  &mmv MOVE_UP_HI  &mmv MOVE_RIGHT_HI  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &msc SCRL_LEFT_HI  &msc SCRL_DOWN_HI  &msc SCRL_UP_HI  &msc SCRL_RIGHT_HI  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans             &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans                     &trans             &trans           &trans              &trans  &trans
             >;
         };
     };
