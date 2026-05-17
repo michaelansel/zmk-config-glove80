@@ -716,12 +716,12 @@
             // hjkl = scroll, yuio = cursor move, m/,/. = left/right/middle click, n=MB4 (back), /=MB5 (forward)
 
             bindings = <
-&none  &none      &none     &none           &none                                                                             &none           &none         &none            &none     &none
-&none  &none      &none     &none           &none           &none                                             &none           &none           &none         &none            &none     &none
-&none  &none      &none     &mo MOUSE_SLOW  &mo MOUSE_FAST  &none                                             &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_UP  &mmv MOVE_RIGHT  &none     &none
-&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT       &none                                             &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_UP  &msc SCRL_RIGHT  &none     &none
-&none  &none      &none     &none           &none           &none  &none  &trans  &none  &none  &none  &none  &mkp MB4        &mkp MB1        &mkp MB3      &mkp MB2         &mkp MB5  &none
-&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT              &none  &none   &none  &none  &none  &none                  &none           &none         &none            &none     &none
+&none  &none      &none     &none           &none                                                                             &none           &none           &none            &none     &none
+&none  &none      &none     &none           &none           &none                                             &none           &none           &none           &none            &none     &none
+&none  &none      &none     &mo MOUSE_SLOW  &mo MOUSE_FAST  &none                                             &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_UP    &mmv MOVE_RIGHT  &none     &none
+&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT       &none                                             &msc SCRL_LEFT  &msc SCRL_UP    &msc SCRL_DOWN  &msc SCRL_RIGHT  &none     &none
+&none  &none      &none     &none           &none           &none  &none  &trans  &none  &none  &none  &none  &mkp MB4        &mkp MB1        &mkp MB3        &mkp MB2         &mkp MB5  &none
+&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT              &none  &none   &none  &none  &none  &none                  &none           &none           &none            &none     &none
             >;
         };
 
@@ -729,12 +729,12 @@
 
         mouse_slow_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                                                                             &trans             &trans           &trans              &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans             &trans             &trans           &trans              &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                                                  &mmv MOVE_LEFT_LO  &mmv MOVE_DOWN_LO  &mmv MOVE_UP_LO  &mmv MOVE_RIGHT_LO  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                                                  &msc SCRL_LEFT_LO  &msc SCRL_DOWN_LO  &msc SCRL_UP_LO  &msc SCRL_RIGHT_LO  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans             &trans             &trans           &trans              &trans  &trans
-&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans                     &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans                                                                             &trans             &trans             &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans             &trans             &trans             &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &mmv MOVE_LEFT_LO  &mmv MOVE_DOWN_LO  &mmv MOVE_UP_LO    &mmv MOVE_RIGHT_LO  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &msc SCRL_LEFT_LO  &msc SCRL_UP_LO    &msc SCRL_DOWN_LO  &msc SCRL_RIGHT_LO  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans             &trans             &trans             &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans                     &trans             &trans             &trans              &trans  &trans
             >;
         };
 
@@ -742,12 +742,12 @@
 
         mouse_fast_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                                                                             &trans             &trans           &trans              &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans             &trans             &trans           &trans              &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                                                  &mmv MOVE_LEFT_HI  &mmv MOVE_DOWN_HI  &mmv MOVE_UP_HI  &mmv MOVE_RIGHT_HI  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                                                  &msc SCRL_LEFT_HI  &msc SCRL_DOWN_HI  &msc SCRL_UP_HI  &msc SCRL_RIGHT_HI  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans             &trans             &trans           &trans              &trans  &trans
-&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans                     &trans             &trans           &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans                                                                             &trans             &trans             &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans             &trans             &trans             &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &mmv MOVE_LEFT_HI  &mmv MOVE_DOWN_HI  &mmv MOVE_UP_HI    &mmv MOVE_RIGHT_HI  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &msc SCRL_LEFT_HI  &msc SCRL_UP_HI    &msc SCRL_DOWN_HI  &msc SCRL_RIGHT_HI  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans             &trans             &trans             &trans              &trans  &trans
+&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans                     &trans             &trans             &trans              &trans  &trans
             >;
         };
     };
