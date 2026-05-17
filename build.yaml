@@ -12,3 +12,6 @@ include:
   - board: nice_nano//zmk
     shield: glove80_dongle
     artifact-name: glove80_dongle
+  - board: nice_nano//zmk
+    shield: settings_reset
+    artifact-name: glove80_dongle_reset
