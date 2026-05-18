@@ -664,12 +664,12 @@
 
         win_move_layer {
             bindings = <
-&none  &none  &none  &none  &none                                                          &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none       &ae_move_u  &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &ae_move_l  &ae_move_d  &ae_move_r  &none  &none
-&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none                                                          &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none   &none                                            &none  &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none   &none                                            &none  &none       &ae_move_u  &none       &none  &none
+&none  &trans  &trans  &trans  &trans  &none                                            &none  &ae_move_l  &ae_move_d  &ae_move_r  &none  &none
+&none  &none   &none   &none   &none   &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none          &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
             >;
         };
 
@@ -677,12 +677,12 @@
 
         win_swap_layer {
             bindings = <
-&none  &none  &none  &none  &none                                                          &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none       &ae_swap_u  &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &ae_swap_l  &ae_swap_d  &ae_swap_r  &none  &none
-&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none                                                           &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none   &none                                            &none  &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none   &none                                            &none  &none       &ae_swap_u  &none       &none  &none
+&none  &trans  &trans  &trans  &trans  &none                                            &none  &ae_swap_l  &ae_swap_d  &ae_swap_r  &none  &none
+&none  &none   &none   &none   &none   &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none          &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
             >;
         };
 
@@ -690,12 +690,12 @@
 
         win_join_layer {
             bindings = <
-&none  &none  &none  &none  &none                                                          &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none       &ae_join_u  &none       &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &ae_join_l  &ae_join_d  &ae_join_r  &none  &none
-&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none       &none       &none       &none  &none
-&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none                                                          &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none   &none                                           &none  &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none   &none                                           &none  &none       &ae_join_u  &none       &none  &none
+&none  &trans  &trans  &trans  &trans  &none                                           &none  &ae_join_l  &ae_join_d  &ae_join_r  &none  &none
+&none  &none   &none   &none   &none   &none  &none  &none  &none  &none  &none  &none &none  &none       &none       &none       &none  &none
+&none  &none   &none   &none   &none          &none  &none  &none  &none  &none  &none        &none       &none       &none       &none  &none
             >;
         };
 
@@ -703,12 +703,12 @@
 
         win_resize_layer {
             bindings = <
-&none  &none  &none  &none  &none                                                          &none               &none               &none              &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none               &none               &none              &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &none               &ae_resize_minus_h  &none              &none  &none
-&none  &none  &none  &none  &none  &none                                            &none  &ae_resize_minus_w  &ae_resize_plus_h   &ae_resize_plus_w  &none  &none
-&none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none               &none               &none              &none  &none
-&none  &none  &none  &none  &none         &none  &none  &none  &none  &none  &none         &none               &none               &none              &none  &none
+&none  &none   &none   &none   &none                                                          &none               &none               &none              &none  &none
+&none  &none   &none   &none   &none   &none                                           &none  &none               &none               &none              &none  &none
+&none  &none   &none   &none   &none   &none                                           &none  &none               &ae_resize_minus_h  &none              &none  &none
+&none  &trans  &trans  &trans  &trans  &none                                           &none  &ae_resize_minus_w  &ae_resize_plus_h   &ae_resize_plus_w  &none  &none
+&none  &none   &none   &none   &none   &none  &none  &none  &none  &none  &none  &none &none  &none               &none               &none              &none  &none
+&none  &none   &none   &none   &none          &none  &none  &none  &none  &none  &none        &none               &none               &none              &none  &none
             >;
         };
 
