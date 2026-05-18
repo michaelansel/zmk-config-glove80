@@ -560,12 +560,12 @@
             // NUM layer — numpad on right hand, entry key stays transparent
 
             bindings = <
-&none   &none   &none   &none   &none                                                               &none   &none   &none    &none      &none
-&none   &none   &none   &none   &none   &none                                                &none  &none   &none   &none    &none      &none
-&none   &none   &none   &none   &none   &none                                                &none  &kp N7  &kp N8  &kp N9   &none      &none
-&none   &none   &none   &none   &none   &none                                                &none  &kp N4  &kp N5  &kp N6   &kp MINUS  &none
-&none   &none   &none   &none   &none   &trans  &trans  &none   &none  &none  &none  &none   &none  &kp N1  &kp N2  &kp N3   &kp FSLH   &none
-&trans  &trans  &trans  &trans  &trans          &trans  &trans  &none  &none  &none  &kp N0         &none   &none   &kp DOT  &none      &none
+&none   &none   &none   &none   &none                                                                &none   &none   &none    &none      &none
+&none   &none   &none   &none   &none   &none                                                 &none  &none   &none   &none    &none      &none
+&none   &none   &none   &none   &none   &none                                                 &none  &kp N7  &kp N8  &kp N9   &none      &none
+&none   &none   &none   &none   &none   &none                                                 &none  &kp N4  &kp N5  &kp N6   &kp MINUS  &none
+&none   &none   &none   &none   &none   &trans  &trans  &none   &none   &none  &none  &none   &none  &kp N1  &kp N2  &kp N3   &kp FSLH   &none
+&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &none  &none  &kp N0         &none   &none   &kp DOT  &none      &none
             >;
         };
 
