@@ -16,7 +16,7 @@
  *   bt2 = connected dd-ee-ff-00-11-22
  *   bt3 = open
  *   split = 2/2
- *   bat = l=85 r=?
+ *   bat = l=85 r=72
  *   ===================
  */
 
@@ -35,7 +35,6 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/battery_state_changed.h>
-#include <zmk/events/split_peripheral_status_changed.h>
 #include <zmk/endpoints.h>
 #include <zmk/ble.h>
 
@@ -49,36 +48,35 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define NUM_BLE_PROFILES 4  /* matches bt_0…bt_3 macros in keymap */
 
-static uint8_t  bat_val[2];
-static bool     bat_known[2];
-static int      split_connected;  /* count of currently connected peripherals */
+static uint8_t bat_val[2];
+static bool    bat_known[2];
+static bool    split_connected[2];
 
-/* Battery updates arrive whenever a peripheral reports its level */
+/*
+ * The central raises zmk_peripheral_battery_state_changed for each source:
+ *   - non-zero level: peripheral is connected and reporting battery
+ *   - zero level: central.c fires this on disconnect to clear the reading
+ * We use this as the sole signal for both battery value and peripheral presence.
+ * (zmk_split_peripheral_status_changed is only raised on the peripheral side,
+ * never on the central/dongle, so we cannot use it here.)
+ */
 static int on_peripheral_battery(const zmk_event_t *eh) {
     const struct zmk_peripheral_battery_state_changed *ev =
         as_zmk_peripheral_battery_state_changed(eh);
     if (ev && ev->source < 2) {
-        bat_val[ev->source]   = ev->state_of_charge;
-        bat_known[ev->source] = true;
+        if (ev->state_of_charge > 0) {
+            bat_val[ev->source]       = ev->state_of_charge;
+            bat_known[ev->source]     = true;
+            split_connected[ev->source] = true;
+        } else {
+            bat_known[ev->source]     = false;
+            split_connected[ev->source] = false;
+        }
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
 ZMK_LISTENER(info_dump_bat, on_peripheral_battery);
 ZMK_SUBSCRIPTION(info_dump_bat, zmk_peripheral_battery_state_changed);
-
-/* Split peripheral connect/disconnect events (no source index — just a count) */
-static int on_split_status(const zmk_event_t *eh) {
-    const struct zmk_split_peripheral_status_changed *ev =
-        as_zmk_split_peripheral_status_changed(eh);
-    if (ev->connected) {
-        split_connected = MIN(split_connected + 1, 2);
-    } else {
-        split_connected = MAX(split_connected - 1, 0);
-    }
-    return ZMK_EV_EVENT_BUBBLE;
-}
-ZMK_LISTENER(info_dump_split, on_split_status);
-ZMK_SUBSCRIPTION(info_dump_split, zmk_split_peripheral_status_changed);
 
 /* ---------- ASCII → ZMK encoded keycode ----------
  *
@@ -185,8 +183,8 @@ static void build_status(void)
         AP("\n");
     }
 
-    /* Split peripheral connection count */
-    AP("split = %d/2\n", split_connected);
+    /* Split peripheral connection (inferred from battery events) */
+    AP("split = %d/2\n", (int)split_connected[0] + (int)split_connected[1]);
 
     /* Peripheral battery — only show value if a notification has arrived */
     AP("bat = l=");
