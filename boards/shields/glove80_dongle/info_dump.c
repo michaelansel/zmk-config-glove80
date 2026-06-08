@@ -16,7 +16,7 @@
  *   bt2 = connected dd-ee-ff-00-11-22
  *   bt3 = open
  *   split = 2/2
- *   bat = l=85 r=72
+ *   bat = l=85 r=na    (na = not yet reported)
  *   ===================
  */
 
@@ -65,12 +65,14 @@ static int on_peripheral_battery(const zmk_event_t *eh) {
         as_zmk_peripheral_battery_state_changed(eh);
     if (ev && ev->source < 2) {
         if (ev->state_of_charge > 0) {
-            bat_val[ev->source]       = ev->state_of_charge;
-            bat_known[ev->source]     = true;
+            bat_val[ev->source]         = ev->state_of_charge;
+            bat_known[ev->source]       = true;
             split_connected[ev->source] = true;
+            LOG_INF("peripheral %d battery: %d%%", ev->source, ev->state_of_charge);
         } else {
-            bat_known[ev->source]     = false;
+            bat_known[ev->source]       = false;
             split_connected[ev->source] = false;
+            LOG_INF("peripheral %d battery: 0 (disconnect)", ev->source);
         }
     }
     return ZMK_EV_EVENT_BUBBLE;
@@ -188,9 +190,9 @@ static void build_status(void)
 
     /* Peripheral battery — only show value if a notification has arrived */
     AP("bat = l=");
-    if (bat_known[0]) { AP("%d", (int)bat_val[0]); } else { AP("?"); }
+    if (bat_known[0]) { AP("%d", (int)bat_val[0]); } else { AP("na"); }
     AP(" r=");
-    if (bat_known[1]) { AP("%d", (int)bat_val[1]); } else { AP("?"); }
+    if (bat_known[1]) { AP("%d", (int)bat_val[1]); } else { AP("na"); }
     AP("\n");
 
     AP("===================\n");
