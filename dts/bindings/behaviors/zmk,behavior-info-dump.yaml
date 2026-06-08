@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: MIT
+description: Types keyboard status (BLE profile, battery, active layer) as keypresses.
+
+compatible: "zmk,behavior-info-dump"
+
+include: zero_param.yaml
