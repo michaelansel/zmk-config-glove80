@@ -3,15 +3,20 @@
  *
  * Bind &info_dump on the MAGIC layer; tap the key while holding MAGIC, then
  * release MAGIC and position cursor in any text field — status types itself
- * after a short delay.
+ * after a 500 ms delay.
  *
  * The full status (including build timestamp) is also logged to USB serial.
  *
- * Output format:
+ * Typed output (all lowercase / unshifted chars only):
  *   === glove80 zmk ===
- *   endpoint = usb
- *   bat = l=85 r=90
- *   layer = 3 [base_layer]
+ *   uptime = 12345 s
+ *   output = usb
+ *   bt0 = open [active]
+ *   bt1 = bonded aa-bb-cc-dd-ee-ff
+ *   bt2 = connected dd-ee-ff-00-11-22
+ *   bt3 = open
+ *   split = 2/2
+ *   bat = l=85 r=?
  *   ===================
  */
 
@@ -20,6 +25,7 @@
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/bluetooth/bluetooth.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -28,7 +34,8 @@
 #include <zmk/behavior.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/keymap.h>
+#include <zmk/events/battery_state_changed.h>
+#include <zmk/events/split_peripheral_status_changed.h>
 #include <zmk/endpoints.h>
 #include <zmk/ble.h>
 
@@ -38,51 +45,73 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-/* ---------- ZMK keycode encoding ----------
+/* ---------- Persistent state updated by event subscriptions ---------- */
+
+#define NUM_BLE_PROFILES 4  /* matches bt_0…bt_3 macros in keymap */
+
+static uint8_t  bat_val[2];
+static bool     bat_known[2];
+static int      split_connected;  /* count of currently connected peripherals */
+
+/* Battery updates arrive whenever a peripheral reports its level */
+static int on_peripheral_battery(const zmk_event_t *eh) {
+    const struct zmk_peripheral_battery_state_changed *ev =
+        as_zmk_peripheral_battery_state_changed(eh);
+    if (ev && ev->source < 2) {
+        bat_val[ev->source]   = ev->state_of_charge;
+        bat_known[ev->source] = true;
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+ZMK_LISTENER(info_dump_bat, on_peripheral_battery);
+ZMK_SUBSCRIPTION(info_dump_bat, zmk_peripheral_battery_state_changed);
+
+/* Split peripheral connect/disconnect events (no source index — just a count) */
+static int on_split_status(const zmk_event_t *eh) {
+    const struct zmk_split_peripheral_status_changed *ev =
+        as_zmk_split_peripheral_status_changed(eh);
+    if (ev->connected) {
+        split_connected = MIN(split_connected + 1, 2);
+    } else {
+        split_connected = MAX(split_connected - 1, 0);
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+ZMK_LISTENER(info_dump_split, on_split_status);
+ZMK_SUBSCRIPTION(info_dump_split, zmk_split_peripheral_status_changed);
+
+/* ---------- ASCII → ZMK encoded keycode ----------
  *
- * raise_zmk_keycode_state_changed_from_encoded() decodes a 32-bit value as:
- *   bits 31..24  usage page  (0 = implicit HID_USAGE_KEY = 0x07)
- *   bits 23..16  implicit modifiers (ZMK mod byte: LSHIFT = bit 1 = 0x02)
- *   bits 15..0   HID usage ID
+ * raise_zmk_keycode_state_changed_from_encoded() format:
+ *   bits 23..16  implicit modifiers  (LSHIFT = 0x02)
+ *   bits 15..0   HID usage ID (keyboard page implicit)
+ *
+ * We keep to lowercase letters, digits, and unshifted punctuation so that
+ * every character in the typed output maps cleanly.
  */
 
-#define _KC(id)         ((uint32_t)(id))            /* keyboard key, no modifier */
-#define _KC_SHF(id)     ((uint32_t)(0x02) << 16 | (id))  /* keyboard key + left shift */
-
-/* HID keyboard usage IDs (USB HID spec, usage page 0x07) */
-static const uint32_t kc_alpha_lower[26] = {
-    /* a */ _KC(0x04), _KC(0x05), _KC(0x06), _KC(0x07), _KC(0x08), _KC(0x09),
-    /* g */ _KC(0x0A), _KC(0x0B), _KC(0x0C), _KC(0x0D), _KC(0x0E), _KC(0x0F),
-    /* m */ _KC(0x10), _KC(0x11), _KC(0x12), _KC(0x13), _KC(0x14), _KC(0x15),
-    /* s */ _KC(0x16), _KC(0x17), _KC(0x18), _KC(0x19), _KC(0x1A), _KC(0x1B),
-    /* y */ _KC(0x1C), _KC(0x1D),
-};
+#define _KC(id)     ((uint32_t)(id))
 
 static uint32_t char_to_keycode(char c)
 {
-    /* Lowercase letters */
-    if (c >= 'a' && c <= 'z') return kc_alpha_lower[c - 'a'];
-    /* Digits 1-9, then 0 */
+    if (c >= 'a' && c <= 'z') return _KC(0x04 + (c - 'a'));
     if (c >= '1' && c <= '9') return _KC(0x1E + (c - '1'));
     if (c == '0')              return _KC(0x27);
-
     switch (c) {
-        case '\n': return _KC(0x28);   /* Enter */
-        case ' ':  return _KC(0x2C);   /* Space */
-        case '-':  return _KC(0x2D);   /* Minus / hyphen */
-        case '=':  return _KC(0x2E);   /* Equals */
-        case '[':  return _KC(0x2F);   /* [ */
-        case ']':  return _KC(0x30);   /* ] */
-        case ';':  return _KC(0x33);   /* Semicolon */
-        case '.':  return _KC(0x37);   /* Period */
-        case '/':  return _KC(0x38);   /* Forward slash */
-        default:   return 0;           /* Unmapped — skipped */
+        case '\n': return _KC(0x28);
+        case ' ':  return _KC(0x2C);
+        case '-':  return _KC(0x2D);
+        case '=':  return _KC(0x2E);
+        case '[':  return _KC(0x2F);
+        case ']':  return _KC(0x30);
+        case '/':  return _KC(0x38);
+        default:   return 0;
     }
 }
 
 /* ---------- Async typing state machine ---------- */
 
-static char   type_buf[512];
+static char   type_buf[768];
 static size_t type_len;
 static size_t type_pos;
 
@@ -98,7 +127,6 @@ static void type_work_fn(struct k_work *work)
     uint32_t kc = char_to_keycode(c);
 
     if (kc == 0) {
-        /* Skip unmapped character, reschedule immediately */
         k_work_reschedule(&type_work, K_MSEC(1));
         return;
     }
@@ -110,20 +138,7 @@ static void type_work_fn(struct k_work *work)
     k_work_reschedule(&type_work, K_MSEC(40));
 }
 
-/* ---------- Status string builder ----------
- *
- * Uses only lowercase letters, digits, and unshifted symbols so that
- * char_to_keycode() covers every character in the output.
- */
-
-static void lowercase_copy(char *dst, const char *src, size_t max)
-{
-    size_t i;
-    for (i = 0; i + 1 < max && src[i]; i++) {
-        dst[i] = (char)tolower((unsigned char)src[i]);
-    }
-    dst[i] = '\0';
-}
+/* ---------- Status string builder ---------- */
 
 static void build_status(void)
 {
@@ -138,42 +153,47 @@ static void build_status(void)
 
     AP("=== glove80 zmk ===\n");
 
+    /* Uptime */
+    AP("uptime = %lld s\n", (long long)(k_uptime_get() / 1000));
+
+    /* Current output transport */
     struct zmk_endpoint_instance ep = zmk_endpoint_get_selected();
     if (ep.transport == ZMK_TRANSPORT_USB) {
-        AP("endpoint = usb\n");
+        AP("output = usb\n");
     } else {
-        AP("endpoint = ble profile %d", ep.ble.profile_index);
-        if (zmk_ble_active_profile_is_connected()) {
-            AP(" [connected]\n");
-        } else {
-            AP(" [disconnected]\n");
-        }
+        AP("output = ble %d\n", ep.ble.profile_index);
     }
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
-    {
-        uint8_t lbat = 0, rbat = 0;
-        bool lknown = (zmk_split_central_get_peripheral_battery_level(0, &lbat) == 0);
-        bool rknown = (zmk_split_central_get_peripheral_battery_level(1, &rbat) == 0);
-        AP("bat = l=");
-        if (lknown) { AP("%d", (int)lbat); } else { AP("?"); }
-        AP(" r=");
-        if (rknown) { AP("%d", (int)rbat); } else { AP("?"); }
+    /* All BLE host profiles */
+    int active = zmk_ble_active_profile_index();
+    for (int i = 0; i < NUM_BLE_PROFILES; i++) {
+        AP("bt%d = ", i);
+        if (zmk_ble_profile_is_open(i)) {
+            AP("open");
+        } else {
+            /* bonded or connected — show partial address (last 3 bytes, LSB first in val[]) */
+            bt_addr_le_t *addr = zmk_ble_profile_address(i);
+            /* val[] is little-endian, so val[5] is MSB (first byte in standard notation) */
+            AP("%s %02x-%02x-%02x-%02x-%02x-%02x",
+               zmk_ble_profile_is_connected(i) ? "connected" : "bonded",
+               addr->a.val[5], addr->a.val[4], addr->a.val[3],
+               addr->a.val[2], addr->a.val[1], addr->a.val[0]);
+        }
+        if (i == active) {
+            AP(" [active]");
+        }
         AP("\n");
     }
-#endif
 
-    {
-        zmk_keymap_layer_index_t layer = zmk_keymap_highest_layer_active();
-        const char *name = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(layer));
-        char lname[32] = "";
-        if (name && name[0]) {
-            lowercase_copy(lname, name, sizeof(lname));
-            AP("layer = %d [%s]\n", (int)layer, lname);
-        } else {
-            AP("layer = %d\n", (int)layer);
-        }
-    }
+    /* Split peripheral connection count */
+    AP("split = %d/2\n", split_connected);
+
+    /* Peripheral battery — only show value if a notification has arrived */
+    AP("bat = l=");
+    if (bat_known[0]) { AP("%d", (int)bat_val[0]); } else { AP("?"); }
+    AP(" r=");
+    if (bat_known[1]) { AP("%d", (int)bat_val[1]); } else { AP("?"); }
+    AP("\n");
 
     AP("===================\n");
 
@@ -182,8 +202,7 @@ static void build_status(void)
     type_len = (size_t)n;
     type_pos = 0;
 
-    /* Also log to USB serial (which can handle uppercase/colons freely) */
-    LOG_INF("info_dump built %s %s: %.*s", __DATE__, __TIME__, (int)type_len, buf);
+    LOG_INF("info_dump built=%s %s:\n%.*s", __DATE__, __TIME__, (int)type_len, buf);
 }
 
 /* ---------- ZMK behavior callbacks ---------- */
@@ -193,7 +212,6 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 {
     k_work_cancel_delayable(&type_work);
     build_status();
-    /* Delay before typing so the user can release MAGIC and position cursor */
     k_work_reschedule(&type_work, K_MSEC(500));
     return ZMK_BEHAVIOR_OPAQUE;
 }
