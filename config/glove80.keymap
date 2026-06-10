@@ -55,7 +55,12 @@
 #define HS_BTN1 HYPER(O) // Click Mouse Button 1
 #define HS_MCTR HYPER(P) // Move mouse to center of screen
 #define HS_MENU HYPER(Q) // Open interactive hammerspoon menu system
+#define HS_TSCR HYPER(R) // Trackball scroll mode
 #define LEADERK HYPER(S) // Open Leader Key
+#define HS_TNEW HYPER(T) // New Tab
+#define SHRTCAT HYPER(U) // Shortcat.app
+#define HRCLICK HYPER(V) // Homerow.app click mode
+#define HRSCRLL HYPER(W) // Homerow.app scroll mode
 
 // Magnet.app
 
@@ -731,15 +736,15 @@
         // MOUSE 13
 
         mouse_layer {
-            // hjkl = scroll, 8/uio = cursor move (inverted-T), cvb = right/mid/left click (left hand), m/,/. = left/right/middle click, n=MB4 (back), /=MB5 (forward)
+            // hjkl = scroll, 8/uio = cursor move (inverted-T), cvb = right/mid/left click (left hand), t=trackball scroll mode, m/,/. = left/right/middle click, n=MB4 (back), /=MB5 (forward)
 
             bindings = <
-&none  &none      &none     &none           &none                                                                                &none           &none           &none            &none     &none
-&none  &none      &none     &none           &none           &none                                                &none           &none           &mmv MOVE_UP    &none            &none     &none
-&none  &none      &none     &mo MOUSE_SLOW  &mo MOUSE_FAST  &none                                                &none           &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &none     &none
-&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT       &none                                                &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_UP    &msc SCRL_RIGHT  &none     &none
-&none  &none      &none     &mkp MB2        &mkp MB3        &mkp MB1  &none  &trans  &none  &none  &none  &none  &mkp MB4        &mkp MB1        &mkp MB3        &mkp MB2         &mkp MB5  &none
-&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT                 &none  &none   &none  &none  &none  &none                  &none           &none           &none            &none     &none
+&none  &none      &none     &none           &none                                                                                   &none           &none           &none            &none     &none
+&none  &none      &none     &none           &none           &none                                                   &none           &none           &mmv MOVE_UP    &none            &none     &none
+&none  &none      &none     &mo MOUSE_SLOW  &mo MOUSE_FAST  &none                                                   &none           &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &none     &none
+&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT       &kp HS_TSCR                                             &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_UP    &msc SCRL_RIGHT  &none     &none
+&none  &none      &none     &mkp MB2        &mkp MB3        &mkp MB1     &none  &trans  &none  &none  &none  &none  &mkp MB4        &mkp MB1        &mkp MB3        &mkp MB2         &mkp MB5  &none
+&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT                    &none  &none   &none  &none  &none  &none                  &none           &none           &none            &none     &none
             >;
         };
 
