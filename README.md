@@ -35,3 +35,6 @@ To locate your firmware files and reflash your Glove80...
 6. Flash the firmware to Glove80 according to the user documentation on the official Glove80 Glove80 Support website (linked above)
 
 Your keyboard is now ready to use.
+
+## Dongle battery telemetry
+The dongle prints a `G80BAT` battery heartbeat line to its USB serial log every 10 s. The format is a contract with a host-side reader; see [docs/battery-telemetry.md](docs/battery-telemetry.md).

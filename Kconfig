@@ -1,0 +1,13 @@
+config GLOVE80_BATTERY_TELEMETRY
+    bool "Emit a periodic G80BAT battery heartbeat line on the log (docs/battery-telemetry.md)"
+    depends on ZMK_SPLIT_ROLE_CENTRAL && ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
+    depends on PRINTK
+
+if GLOVE80_BATTERY_TELEMETRY
+
+config GLOVE80_BATTERY_HEARTBEAT_MS
+    int "Interval between G80BAT heartbeat lines, in milliseconds"
+    default 10000
+    range 1000 600000
+
+endif

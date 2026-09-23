@@ -1,5 +1,8 @@
 if SHIELD_GLOVE80_DONGLE
 
+# The macOS battery reader finds the dongle's serial port by looking this name up
+# in the IORegistry (ioreg -n Glove80). Renaming it silently breaks that reader.
+# See docs/battery-telemetry.md.
 config ZMK_KEYBOARD_NAME
     default "Glove80"
 

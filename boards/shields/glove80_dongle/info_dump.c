@@ -34,51 +34,39 @@
 #include <zmk/behavior.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/events/battery_state_changed.h>
 #include <zmk/endpoints.h>
 #include <zmk/ble.h>
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
-#include <zmk/split/central.h>
+#if IS_ENABLED(CONFIG_GLOVE80_BATTERY_TELEMETRY)
+#include <glove80/battery_telemetry.h>
 #endif
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-/* ---------- Persistent state updated by event subscriptions ---------- */
-
 #define NUM_BLE_PROFILES 4  /* matches bt_0…bt_3 macros in keymap */
 
-static uint8_t bat_val[2];
-static bool    bat_known[2];
-static bool    split_connected[2];
-
-/*
- * The central raises zmk_peripheral_battery_state_changed for each source:
- *   - non-zero level: peripheral is connected and reporting battery
- *   - zero level: central.c fires this on disconnect to clear the reading
- * We use this as the sole signal for both battery value and peripheral presence.
- * (zmk_split_peripheral_status_changed is only raised on the peripheral side,
- * never on the central/dongle, so we cannot use it here.)
- */
-static int on_peripheral_battery(const zmk_event_t *eh) {
-    const struct zmk_peripheral_battery_state_changed *ev =
-        as_zmk_peripheral_battery_state_changed(eh);
-    if (ev && ev->source < 2) {
-        if (ev->state_of_charge > 0) {
-            bat_val[ev->source]         = ev->state_of_charge;
-            bat_known[ev->source]       = true;
-            split_connected[ev->source] = true;
-            LOG_INF("peripheral %d battery: %d%%", ev->source, ev->state_of_charge);
-        } else {
-            bat_known[ev->source]       = false;
-            split_connected[ev->source] = false;
-            LOG_INF("peripheral %d battery: 0 (disconnect)", ev->source);
-        }
+/* Peripheral battery and split link state come from the shared cache in
+ * src/battery_telemetry.c (also the source of the G80BAT heartbeat). */
+static void append_bat(char *buf, size_t sz, uint8_t side)
+{
+#if IS_ENABLED(CONFIG_GLOVE80_BATTERY_TELEMETRY)
+    uint8_t pct;
+    if (g80_battery_get(side, &pct, NULL)) {
+        snprintf(buf, sz, "%d", (int)pct);
+        return;
     }
-    return ZMK_EV_EVENT_BUBBLE;
+#endif
+    snprintf(buf, sz, "na");
 }
-ZMK_LISTENER(info_dump_bat, on_peripheral_battery);
-ZMK_SUBSCRIPTION(info_dump_bat, zmk_peripheral_battery_state_changed);
+
+static int split_count(void)
+{
+#if IS_ENABLED(CONFIG_GLOVE80_BATTERY_TELEMETRY)
+    return g80_split_connected();
+#else
+    return 0;
+#endif
+}
 
 /* ---------- ASCII → ZMK encoded keycode ----------
  *
@@ -185,15 +173,14 @@ static void build_status(void)
         AP("\n");
     }
 
-    /* Split peripheral connection (inferred from battery events) */
-    AP("split = %d/2\n", (int)split_connected[0] + (int)split_connected[1]);
+    /* Split peripheral connection */
+    AP("split = %d/2\n", split_count());
 
-    /* Peripheral battery — only show value if a notification has arrived */
-    AP("bat = l=");
-    if (bat_known[0]) { AP("%d", (int)bat_val[0]); } else { AP("na"); }
-    AP(" r=");
-    if (bat_known[1]) { AP("%d", (int)bat_val[1]); } else { AP("na"); }
-    AP("\n");
+    /* Peripheral battery — "na" until a reading arrives, or while disconnected */
+    char l[4], r[4];
+    append_bat(l, sizeof(l), 0);
+    append_bat(r, sizeof(r), 1);
+    AP("bat = l=%s r=%s\n", l, r);
 
     AP("===================\n");
 
