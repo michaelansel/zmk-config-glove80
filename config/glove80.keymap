@@ -615,8 +615,8 @@
         base_layer {
             // ---------------------------------------------------------------------------------------------------------------------------------------
             // | ESC   |NONE |NONE |NONE | NONE |                                                                    | NONE |NONE |NONE | NONE | NONE |
-            // | NONE  |  1  |  2  |  3  |  4   |  5   |                                                    |  6   |  7   |  8  |  9  |  0   |  -   |
-            // | NONE  |  Q  |  W  |  E  |  R   |  T   |                                                    |  Y   |  U   |  I  |  O  |  P   |  \   |
+            // | NONE  |NONE |NONE |NONE | NONE | NONE |                                                    | NONE | NONE |NONE |NONE | NONE | NONE |
+            // | NONE  |  Q  |  W  |  E  |  R   |  T   |                                                    |  Y   |  U   |  I  |  O  |  P   | NONE |
             // | NONE  |  A  |  S  |  D  |  F   |  G   |                                                    |  H   |  J   |  K  |  L  |  ;   |  '   |
             // | NONE  |  Z  |  X  |  C  |  V   |  B   |WIN/NROW|MSE/TOG| NONE  |MO(MSE)| NONE  |UNI/NPAD|  N   |  M   |  ,  |  .  |  /   | NONE |
             // | MAGIC |LCTL |LALT |LGUI |LSHFT |       | MO(SYM)| MO(NAV)|NPAD/NW| NONE  | ENT   | SYM/SPC|      | RSHFT| RGUI| RALT| RCTL | NONE |
@@ -625,12 +625,12 @@
             // UNI/NPAD: tap = one-shot UNI, double tap = NUMPAD num_word.
 
             bindings = <
-&kp ESC         &none      &none     &none     &none                                                                                                                  &none      &none      &none     &none      &none
-&none           &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                                                              &kp N6  &kp N7     &kp N8     &kp N9    &kp N0     &kp MINUS
-&none           &kp Q      &kp W     &kp E     &kp R      &kp T                                                                                               &kp Y   &kp U      &kp I      &kp O     &kp P      &none
-&caps_word      &kp A      &kp S     &kp D     &kp F      &kp G                                                                                               &kp H   &kp J      &kp K      &kp L     &kp SEMI   &kp SQT
-&none           &kp Z      &kp X     &kp C     &kp V      &kp B   &lnr WIN NUMROW  &lht MOUSE MOUSE  &none               &mo MOUSE  &none      &td_uni_pad    &kp N   &kp M      &kp COMMA  &kp DOT   &kp FSLH   &none
-&magic MAGIC 0  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT          &mo SYM          &mo NAV           &lnp NUMPAD NUMPAD  &none      &kp ENTER  &lt SYM SPACE          &kp RSHFT  &kp RGUI   &kp RALT  &kp RCTRL  &none
+&kp ESC         &none      &none     &none     &none                                                                                                                &none      &none      &none     &none      &none
+&none           &none      &none     &none     &none      &none                                                                                              &none  &none      &none      &none     &none      &none
+&none           &kp Q      &kp W     &kp E     &kp R      &kp T                                                                                              &kp Y  &kp U      &kp I      &kp O     &kp P      &none
+&caps_word      &kp A      &kp S     &kp D     &kp F      &kp G                                                                                              &kp H  &kp J      &kp K      &kp L     &kp SEMI   &kp SQT
+&none           &kp Z      &kp X     &kp C     &kp V      &kp B  &lnr WIN NUMROW  &lht MOUSE MOUSE  &none               &mo MOUSE  &none      &td_uni_pad    &kp N  &kp M      &kp COMMA  &kp DOT   &kp FSLH   &none
+&magic MAGIC 0  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT         &mo SYM          &mo NAV           &lnp NUMPAD NUMPAD  &none      &kp ENTER  &lt SYM SPACE         &kp RSHFT  &kp RGUI   &kp RALT  &kp RCTRL  &none
             >;
         };
 
@@ -656,7 +656,9 @@
         // NUMROW 2
 
         numrow_layer {
-            // NUMROW: number-row digits one row down (Q..P = 1..0), same finger per digit.
+            // NUMROW: number-row digits one row down (Q..P = 1..0, minus right of P), same finger per digit.
+            // The BASE number row is disabled; this layer and NUMPAD are the only digit sources.
+            // Bottom-row mods on both hands fall through and do not end number mode (ignore-modifiers).
             // Entered by tapping WIN (num_word); ends on the first non-digit key.
             // Left home row = mods, so shift+digit (or SYM) gives the symbols.
             // &trans fill is deliberate (see NUMPAD).
@@ -664,7 +666,7 @@
             bindings = <
 &trans  &trans     &trans    &trans    &trans                                                                     &trans  &trans  &trans  &trans  &trans
 &trans  &trans     &trans    &trans    &trans     &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                  &kp N6  &kp N7  &kp N8  &kp N9  &kp N0  &trans
+&trans  &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                  &kp N6  &kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS
 &trans  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans     &trans    &trans    &trans     &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans     &trans    &trans    &trans             &trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans
