@@ -19,22 +19,23 @@
 // Layers
 
 #define BASE         0
-#define NUM          1
-#define MAGIC        2
-#define TEST         3
-#define NAV          4
-#define SYM          5
-#define UNI          6
-#define WIN          7
-#define GAME         8
-#define WIN_MOVE     9
-#define WIN_SWAP     10
-#define WIN_JOIN     11
-#define WIN_RESIZE   12
-#define MOUSE        13
-#define MOUSE_SLOW   14
-#define MOUSE_FAST   15
-#define STOCK        16
+#define NUMPAD       1
+#define NUMROW       2
+#define MAGIC        3
+#define TEST         4
+#define NAV          5
+#define SYM          6
+#define UNI          7
+#define WIN          8
+#define GAME         9
+#define WIN_MOVE     10
+#define WIN_SWAP     11
+#define WIN_JOIN     12
+#define WIN_RESIZE   13
+#define MOUSE        14
+#define MOUSE_SLOW   15
+#define MOUSE_FAST   16
+#define STOCK        17
 
 // Hammerspoon Hyper-key triggers (HYPER is defined in glove80.keymap)
 
@@ -162,6 +163,71 @@
                 <&ae_send_mode>,
                 <&ae_send_empty>,
                 <&ae_send_empty_follow>;
+        };
+
+        // Auto-layers (urob/zmk-auto-layer): the layer stays active while typing
+        // digits and the continue-list keys, and deactivates on any other keycode.
+        // Tapping the trigger again also deactivates. Two instances so NUMROW and
+        // NUMPAD keep independent on/off state.
+
+        numrow_word: numrow_word {
+            compatible = "zmk,behavior-auto-layer";
+            #binding-cells = <1>;
+            continue-list = <BSPC DEL DOT COMMA PLUS MINUS STAR FSLH EQUAL COLON>;
+            ignore-numbers;
+            ignore-modifiers; // home-row mods inside the layer must not end number mode
+        };
+
+        numpad_word: numpad_word {
+            compatible = "zmk,behavior-auto-layer";
+            #binding-cells = <1>;
+            continue-list = <BSPC DEL DOT COMMA PLUS MINUS STAR FSLH EQUAL COLON>;
+            ignore-numbers;
+            ignore-modifiers;
+        };
+
+        // hold = momentary layer, tap = num_word. Hold-preferred (ZMK default) so an
+        // early keypress after the thumb goes down always resolves to the hold layer.
+
+        lnr: layer_or_numrow_word {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&numrow_word>;
+        };
+
+        lnp: layer_or_numpad_word {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&numpad_word>;
+        };
+
+        // Shift combos (S+D, K+L): tap/hold = shift, double tap = caps_word.
+        // Tap-dances resolve immediately on interrupt and stay held while the keys are
+        // down, so single-tap and held shift behave as before.
+
+        td_lsft_caps: tap_dance_lshift_caps_word {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp LSHFT>, <&caps_word>;
+        };
+
+        td_rsft_caps: tap_dance_rshift_caps_word {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp RSHFT>, <&caps_word>;
+        };
+
+        // Right upper-inner thumb: tap = one-shot UNI, double tap = numpad num_word
+
+        td_uni_pad: tap_dance_uni_numpad {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&sl UNI>, <&numpad_word NUMPAD>;
         };
     };
 
@@ -504,15 +570,15 @@
 
         combo_lshift {
             timeout-ms = <50>;
-            key-positions = <36 37>;   // S + D
-            bindings = <&kp LSHFT>;
+            key-positions = <36 37>;   // S + D; double tap = caps_word
+            bindings = <&td_lsft_caps>;
             layers = <BASE>;
         };
 
         combo_rshift {
             timeout-ms = <50>;
-            key-positions = <42 43>;   // K + L
-            bindings = <&kp RSHFT>;
+            key-positions = <42 43>;   // K + L; double tap = caps_word
+            bindings = <&td_rsft_caps>;
             layers = <BASE>;
         };
 
@@ -552,35 +618,60 @@
             // | NONE  |  1  |  2  |  3  |  4   |  5   |                                                    |  6   |  7   |  8  |  9  |  0   |  -   |
             // | NONE  |  Q  |  W  |  E  |  R   |  T   |                                                    |  Y   |  U   |  I  |  O  |  P   |  \   |
             // | NONE  |  A  |  S  |  D  |  F   |  G   |                                                    |  H   |  J   |  K  |  L  |  ;   |  '   |
-            // | NONE  |  Z  |  X  |  C  |  V   |  B   | MO(WIN)| NONE  | NONE  |MO(MSE)| NONE  | OSL(UNI)|  N   |  M   |  ,  |  .  |  /   | NONE |
-            // | MAGIC |LCTL |LALT |LGUI |LSHFT |       | MO(SYM)| MO(NAV)| NONE | NONE  | ENT   | SYM/SPC|      | RSHFT| RGUI| RALT| RCTL | NONE |
+            // | NONE  |  Z  |  X  |  C  |  V   |  B   |WIN/NROW|MSE/TOG| NONE  |MO(MSE)| NONE  |UNI/NPAD|  N   |  M   |  ,  |  .  |  /   | NONE |
+            // | MAGIC |LCTL |LALT |LGUI |LSHFT |       | MO(SYM)| MO(NAV)|NPAD/NW| NONE  | ENT   | SYM/SPC|      | RSHFT| RGUI| RALT| RCTL | NONE |
+            //
+            // WIN/NROW: hold = WIN, tap = NUMROW num_word.  NPAD/NW: hold = NUMPAD, tap = NUMPAD num_word.
+            // UNI/NPAD: tap = one-shot UNI, double tap = NUMPAD num_word.
 
             bindings = <
-&kp ESC         &none      &none     &none     &none                                                                                            &none      &none      &none     &none      &none
-&none           &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                                        &kp N6  &kp N7     &kp N8     &kp N9    &kp N0     &kp MINUS
-&none           &kp Q      &kp W     &kp E     &kp R      &kp T                                                                         &kp Y   &kp U      &kp I      &kp O     &kp P      &none
-&caps_word      &kp A      &kp S     &kp D     &kp F      &kp G                                                                         &kp H   &kp J      &kp K      &kp L     &kp SEMI   &kp SQT
-&none           &kp Z      &kp X     &kp C     &kp V      &kp B   &mo WIN  &lht MOUSE MOUSE  &none     &mo MOUSE  &none      &sl UNI        &kp N   &kp M      &kp COMMA  &kp DOT   &kp FSLH   &none
-&magic MAGIC 0  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT          &mo SYM  &mo NAV           &lht 1 1  &none  &kp ENTER  &lt SYM SPACE          &kp RSHFT  &kp RGUI   &kp RALT  &kp RCTRL  &none
+&kp ESC         &none      &none     &none     &none                                                                                                                  &none      &none      &none     &none      &none
+&none           &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                                                              &kp N6  &kp N7     &kp N8     &kp N9    &kp N0     &kp MINUS
+&none           &kp Q      &kp W     &kp E     &kp R      &kp T                                                                                               &kp Y   &kp U      &kp I      &kp O     &kp P      &none
+&caps_word      &kp A      &kp S     &kp D     &kp F      &kp G                                                                                               &kp H   &kp J      &kp K      &kp L     &kp SEMI   &kp SQT
+&none           &kp Z      &kp X     &kp C     &kp V      &kp B   &lnr WIN NUMROW  &lht MOUSE MOUSE  &none               &mo MOUSE  &none      &td_uni_pad    &kp N   &kp M      &kp COMMA  &kp DOT   &kp FSLH   &none
+&magic MAGIC 0  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT          &mo SYM          &mo NAV           &lnp NUMPAD NUMPAD  &none      &kp ENTER  &lt SYM SPACE          &kp RSHFT  &kp RGUI   &kp RALT  &kp RCTRL  &none
             >;
         };
 
-        // NUM 1
+        // NUMPAD 1
 
-        num_layer {
-            // NUM layer — numpad on right hand, entry key stays transparent
+        numpad_layer {
+            // NUMPAD: 10-key grid shifted up one row, 0 on upper-inner right thumb.
+            // 7 8 9 on the number-row keys, 4 5 6 on U I O, 1 2 3 on J K L, minus on P, slash on ;.
+            // &trans fill is deliberate: num_word only ends on real keycodes, so non-grid keys must
+            // fall through. Period/comma fall through to their own keys; Space, Enter, or any letter
+            // ends the mode. Entered from L_T6 (hold/tap) or double-tap on R_T1.
 
             bindings = <
-&none   &none   &none   &none   &none                                                                &none   &none   &none    &none      &none
-&none   &none   &none   &none   &none   &none                                                 &none  &none   &none   &none    &none      &none
-&none   &none   &none   &none   &none   &none                                                 &none  &kp N7  &kp N8  &kp N9   &none      &none
-&none   &none   &none   &none   &none   &none                                                 &none  &kp N4  &kp N5  &kp N6   &kp MINUS  &none
-&none   &none   &none   &none   &none   &trans  &trans  &none   &none   &none  &none  &none   &none  &kp N1  &kp N2  &kp N3   &kp FSLH   &none
-&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &none  &none  &kp N0         &none   &none   &kp DOT  &none      &none
+&trans  &trans  &trans  &trans  &trans                                                                  &trans  &trans  &trans  &trans     &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &kp N7  &kp N8  &kp N9  &trans     &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &kp N4  &kp N5  &kp N6  &kp MINUS  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                                  &trans  &kp N1  &kp N2  &kp N3  &kp FSLH   &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &kp N0  &trans  &trans  &trans  &trans  &trans     &trans
+&trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans     &trans
             >;
         };
 
-        // MAGIC 2
+        // NUMROW 2
+
+        numrow_layer {
+            // NUMROW: number-row digits one row down (Q..P = 1..0), same finger per digit.
+            // Entered by tapping WIN (num_word); ends on the first non-digit key.
+            // Left home row = mods, so shift+digit (or SYM) gives the symbols.
+            // &trans fill is deliberate (see NUMPAD).
+
+            bindings = <
+&trans  &trans     &trans    &trans    &trans                                                                     &trans  &trans  &trans  &trans  &trans
+&trans  &trans     &trans    &trans    &trans     &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &kp N1     &kp N2    &kp N3    &kp N4     &kp N5                                                  &kp N6  &kp N7  &kp N8  &kp N9  &kp N0  &trans
+&trans  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT  &trans                                                  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans     &trans    &trans    &trans     &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans     &trans    &trans    &trans             &trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        // MAGIC 3
 
         magic_layer {
             bindings = <
@@ -593,7 +684,7 @@
             >;
         };
 
-        // TEST 3
+        // TEST 4
 
         factory_test_layer {
             bindings = <
@@ -606,7 +697,7 @@
             >;
         };
 
-        // NAV 4
+        // NAV 5
 
         nav_layer {
             // NAV: HJKL arrows, home row mods on left, nav cluster on right bottom alpha
@@ -621,7 +712,7 @@
             >;
         };
 
-        // SYM 5
+        // SYM 6
 
         sym_layer {
             // SYM: symbols on left alpha, parens/brackets on right, mods on left home row
@@ -631,12 +722,12 @@
 &none   &none      &none     &none        &none      &none                                                            &kp CARET  &kp AMPS  &kp ASTRK  &none     &none             &none
 &none   &kp EXCL   &kp AT    &kp HASH     &kp DLLR   &kp PRCNT                                                        &kp ESC    &kp LBRC  &kp TAB    &kp RBRC  &kp SINGLE_QUOTE  &none
 &none   &kp LCTRL  &kp LALT  &kp LGUI     &kp LSHFT  &kp EQUAL                                                        &kp PIPE   &kp LPAR  &kp MINUS  &kp RPAR  &kp COLON         &kp DQT
-&none   &kp BSLH   &kp LT    &td_cpy_pst  &kp GT     &lht 1 1   &none   &none  &none  &none  &kp DEL        &none     &kp GRAVE  &kp LBKT  &kp UNDER  &kp RBKT  &kp QMARK         &none
+&none   &kp BSLH   &kp LT    &td_cpy_pst  &kp GT     &none      &none   &none  &none  &none  &kp DEL        &none     &kp GRAVE  &kp LBKT  &kp UNDER  &kp RBKT  &kp QMARK         &none
 &trans  &trans     &trans    &trans       &trans                &trans  &none  &none  &none  &kp LG(ENTER)  &kp BSPC             &trans    &trans     &trans    &trans            &none
             >;
         };
 
-        // UNI 6
+        // UNI 7
 
         uni_layer {
             // UNI: app launchers via Hammerspoon, media, Magnet
@@ -651,7 +742,7 @@
             >;
         };
 
-        // WIN 7
+        // WIN 8
 
         win_layer {
             // WIN: Aerospace window management via AE_CHORD + verb dispatch
@@ -666,7 +757,7 @@
             >;
         };
 
-        // GAME 8
+        // GAME 9
 
         game_layer {
             // GAME: WASD game friendly layout
@@ -681,7 +772,7 @@
             >;
         };
 
-        // WIN_MOVE 9
+        // WIN_MOVE 10
 
         win_move_layer {
             bindings = <
@@ -694,7 +785,7 @@
             >;
         };
 
-        // WIN_SWAP 10
+        // WIN_SWAP 11
 
         win_swap_layer {
             bindings = <
@@ -707,7 +798,7 @@
             >;
         };
 
-        // WIN_JOIN 11
+        // WIN_JOIN 12
 
         win_join_layer {
             bindings = <
@@ -720,7 +811,7 @@
             >;
         };
 
-        // WIN_RESIZE 12
+        // WIN_RESIZE 13
 
         win_resize_layer {
             bindings = <
@@ -733,7 +824,7 @@
             >;
         };
 
-        // MOUSE 13
+        // MOUSE 14
 
         mouse_layer {
             // hjkl = scroll, 8/uio = cursor move (inverted-T), xcv = right/mid/left click (left hand), SYM=trackball scroll mode, m/,/. = left/right/middle click, n=MB4 (back), /=MB5 (forward)
@@ -743,12 +834,12 @@
 &none  &none      &none     &none           &none           &none                                                   &none           &none           &mmv MOVE_UP    &none            &none     &none
 &none  &none      &none     &mo MOUSE_SLOW  &mo MOUSE_FAST  &none                                                   &none           &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &none     &none
 &none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT       &none                                                   &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_UP    &msc SCRL_RIGHT  &none     &none
-&none  &none      &mkp MB2  &mkp MB3        &mkp MB1        &none        &none  &trans  &none  &none  &none  &none  &mkp MB4        &mkp MB1        &mkp MB3        &mkp MB2         &mkp MB5  &none
-&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT                    &kp HS_TSCR  &none  &none  &none  &none  &none                  &none           &none           &none            &none     &none
+&none  &none      &mkp MB2  &mkp MB3        &mkp MB1        &none  &none        &trans  &none  &none  &none  &none  &mkp MB4        &mkp MB1        &mkp MB3        &mkp MB2         &mkp MB5  &none
+&none  &kp LCTRL  &kp LALT  &kp LGUI        &kp LSHFT              &kp HS_TSCR  &none   &none  &none  &none  &none                  &none           &none           &none            &none     &none
             >;
         };
 
-        // MOUSE_SLOW 14
+        // MOUSE_SLOW 15
 
         mouse_slow_layer {
             // hold Q while scrolling/moving for precision speed
@@ -762,7 +853,7 @@
             >;
         };
 
-        // MOUSE_FAST 15
+        // MOUSE_FAST 16
 
         mouse_fast_layer {
             // hold R while scrolling/moving for turbo speed
@@ -776,7 +867,7 @@
             >;
         };
 
-        // STOCK 16
+        // STOCK 17
 
         stock_layer {
             // STOCK: default Glove80 keycap layout for guest use; magic key exits back to BASE
