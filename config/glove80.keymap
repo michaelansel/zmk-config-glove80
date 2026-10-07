@@ -186,12 +186,14 @@
             ignore-modifiers;
         };
 
-        // hold = momentary layer, tap = num_word. Hold-preferred (ZMK default) so an
-        // early keypress after the thumb goes down always resolves to the hold layer.
+        // hold = momentary layer, tap = num_word. Balanced so a roll (thumb down, digit down,
+        // thumb up, digit up) taps into num_word, while a key pressed and released under the
+        // held thumb, or holding past the tapping term, resolves to the layer.
 
         lnr: layer_or_numrow_word {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
+            flavor = "balanced";
             tapping-term-ms = <200>;
             bindings = <&mo>, <&numrow_word>;
         };
